@@ -1,0 +1,27 @@
+/* Forces side-by-side layout */
+.layout {
+  display: flex !important; 
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* Sidebar styling */
+.sidebar {
+  width: 250px;
+  min-width: 250px;
+  flex-shrink: 0; /* Prevents it from getting squished */
+  background-color: #f8f9fa;
+  border-right: 2px solid #e0e0e0;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* Adds space between your links */
+}
+
+/* Main content area */
+.content {
+  flex-grow: 1; /* Takes up the remaining screen space */
+  background-color: #ffffff;
+  padding: 40px;
+  overflow-y: auto;
+}

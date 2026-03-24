@@ -1,0 +1,81 @@
+/* The overall layout background */
+.admin-layout {
+  min-height: 100vh;
+  background-color: #f3f4f6; /* slightly darker gray for admin backend */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* The Top Navbar */
+.admin-navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #ffffff;
+  padding: 15px 40px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); /* slightly stronger shadow */
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 3px solid #1d4ed8; /* Blue accent line */
+}
+
+/* The Brand Logo */
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.admin-badge {
+  background-color: #1d4ed8; /* Admin Blue */
+  color: white;
+  font-weight: bold;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 1rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.nav-brand h2 {
+  margin: 0;
+  font-size: 1.4rem;
+  color: #1f2937;
+}
+
+/* The Links */
+.nav-links {
+  display: flex;
+  gap: 30px;
+}
+
+.nav-item {
+  text-decoration: none;
+  color: #4b5563;
+  font-weight: 600;
+  font-size: 1.05rem;
+  padding-bottom: 5px;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.nav-item:hover {
+  color: #1d4ed8;
+}
+
+.nav-item.active {
+  color: #1d4ed8;
+  border-bottom: 2px solid #1d4ed8;
+}
+
+/* The Content Area */
+.admin-content {
+  padding: 40px 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.content-container {
+  width: 100%;
+  max-width: 1200px; /* Slightly wider for data tables */
+}
