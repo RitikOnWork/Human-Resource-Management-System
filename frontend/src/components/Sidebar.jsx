@@ -26,7 +26,7 @@ function Sidebar() {
 
   return (
     <aside className="sidebar">
-      <h3 className="sidebar-title">Nagar Yukt HRMS</h3>
+      <h3 className="sidebar-title">HRMS</h3>
 
       <nav>
         {menus.map((item) => (

@@ -7,7 +7,7 @@ function AdminNavbar() {
     <nav className="admin-navbar">
       <div className="nav-brand">
         <div className="brand-badge admin-badge">Admin</div>
-        <h2>Nagar Yukt HRMS</h2>
+        <h2>HRMS</h2>
       </div>
 
       <div className="nav-links">

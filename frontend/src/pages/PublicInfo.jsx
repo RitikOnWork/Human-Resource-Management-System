@@ -10,46 +10,46 @@ function PublicInfo() {
   const content = {
     platform: { 
       title: "The Platform", 
-      text: "Nagar Yukt HRMS is a comprehensive suite designed specifically for municipal bodies. It integrates attendance, payroll, and recruitment into one unified ecosystem." 
+      text: "HRMS is a comprehensive suite designed for modern organizations. It integrates attendance, payroll, and recruitment into one unified ecosystem." 
     },
     solutions: { 
       title: "Our Solutions", 
-      text: "Whether you manage sanitation workers, administrative staff, or health inspectors, our geo-fenced solutions ensure accountability across all municipal departments." 
+      text: "Whether you manage a global team, dynamic shift workers, or remote employees, our geo-fenced solutions ensure accountability across all departments." 
     },
     privacy: { 
       title: "Privacy Policy", 
-      text: "We take your data security seriously. All employee records and geo-location data are encrypted and strictly accessible only by authorized HR administrators." 
+      text: "We take your data security seriously. All employee records and data are encrypted and strictly accessible only by authorized HR administrators." 
     },
     compliance: { 
-      title: "Government Compliance", 
-      text: "Our platform is built to adhere strictly to State and Federal data protection guidelines for government employees and contractors." 
+      title: "Enterprise Security", 
+      text: "Our platform is built to adhere strictly to global data protection guidelines like GDPR and SOC2 for enterprise organizations." 
     },
     contact: { 
       title: "Contact Support", 
-      text: "Need help? Reach out to our 24/7 municipal support team at support@nagaryukt.gov or call 1-800-NAGAR-HELP." 
+      text: "Need help? Reach out to our 24/7 enterprise support team at support@hrms.com or call 1-800-HRMS-HELP." 
     }
   };
 
   const pageData = content[path] || { title: "Coming Soon", text: "We are currently updating this section." };
 
   return (
-    <div className="landing-page">
+    <div className="landing-page dark-premium">
       {/* Simple Header */}
       <header className="landing-header">
          <div className="container header-container">
             <Link to="/" className="brand" style={{textDecoration: 'none'}}>
-              <div className="brand-logo">NY</div>
-              <span className="brand-text">Nagar Yukt HRMS</span>
+              <div className="brand-logo">HR</div>
+              <span className="brand-text">HRMS</span>
             </Link>
          </div>
       </header>
 
       {/* Dynamic Content */}
       <div className="container" style={{ padding: '100px 24px', minHeight: '65vh' }}>
-        <h1 style={{ fontSize: '3rem', color: '#111827', marginBottom: '20px' }}>{pageData.title}</h1>
-        <p style={{ fontSize: '1.2rem', color: '#4b5563', lineHeight: '1.8', maxWidth: '800px' }}>{pageData.text}</p>
+        <h1 style={{ fontSize: '3rem', color: '#f9fafb', marginBottom: '20px', letterSpacing: '-0.02em', fontWeight: '800' }}>{pageData.title}</h1>
+        <p style={{ fontSize: '1.2rem', color: '#9ca3af', lineHeight: '1.8', maxWidth: '800px' }}>{pageData.text}</p>
         
-        <Link to="/" style={{ display: 'inline-block', marginTop: '40px', color: '#ea580c', fontWeight: 'bold', textDecoration: 'none', fontSize: '1.1rem' }}>
+        <Link to="/" style={{ display: 'inline-block', marginTop: '40px', color: '#a78bfa', fontWeight: 'bold', textDecoration: 'none', fontSize: '1.1rem' }}>
           ← Back to Home
         </Link>
       </div>
@@ -58,7 +58,7 @@ function PublicInfo() {
       <footer className="landing-footer">
         <div className="container footer-container">
           <div className="footer-copyright">
-            <p>&copy; 2026 Nagar Yukt Municipal Systems. Built for Public Trust.</p>
+            <p>&copy; 2026 HRMS. All Rights Reserved.</p>
           </div>
         </div>
       </footer>

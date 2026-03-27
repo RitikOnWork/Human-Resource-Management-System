@@ -26,7 +26,7 @@
 }
 
 .brand-badge {
-  background-color: #ea580c; /* Your NY Orange */
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); /* Premium HR Purple */
   color: white;
   font-weight: bold;
   padding: 8px 12px;

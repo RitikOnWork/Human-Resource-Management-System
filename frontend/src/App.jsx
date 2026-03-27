@@ -3,7 +3,6 @@ import { Routes, Route, Navigate } from "react-router-dom";
 /* Public */
 import Landing from "./pages/Landing";
 import Login from "./pages/auth/Login";
-import Signup from "./pages/auth/Signup";
 /* Auth wrapper */
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -18,18 +17,21 @@ import CreateEmployee from "./pages/admin/CreateEmployee";
 import AdminEmployees from "./pages/admin/AdminEmployees";
 import AdminCreateJob from "./pages/admin/CreateJob";
 import PublicInfo from "./pages/PublicInfo";
+import Platform from "./pages/Platform";
+import Solutions from "./pages/Solutions";
+import BookDemo from "./pages/BookDemo";
 
 function App() {
   return (
     
     <Routes>
       {/* Public */}
-      <Route path="/signup" element={<Signup />} />
       <Route path="/" element={<Landing />} />
       <Route path="/login" element={<Login />} />
       {/* Public Info Pages */}
-        <Route path="/platform" element={<PublicInfo />} />
-        <Route path="/solutions" element={<PublicInfo />} />
+        <Route path="/platform" element={<Platform />} />
+        <Route path="/solutions" element={<Solutions />} />
+        <Route path="/demo" element={<BookDemo />} />
         <Route path="/privacy" element={<PublicInfo />} />
         <Route path="/compliance" element={<PublicInfo />} />
         <Route path="/contact" element={<PublicInfo />} />

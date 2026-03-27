@@ -22,7 +22,7 @@ const EmployeeSidebar = ({ activeTab, onTabChange, onLogout }) => {
           </svg>
         </div>
         <div className="sidebar-app-name">
-          Nagar-Yukt-HRMS
+          HRMS
           <span>Employee Portal</span>
         </div>
       </div>

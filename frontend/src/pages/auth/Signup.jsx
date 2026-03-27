@@ -40,50 +40,75 @@ function Signup() {
 
   return (
     <div className="login-container">
-      <div className="login-card">
-        <h2>Create an Account</h2>
-        <p style={{ color: "#6b7280", marginBottom: "20px" }}>Join the Nagar Yukt Career Portal</p>
-        
-        {error && <div className="error-message" style={{ color: "red", marginBottom: "10px" }}>{error}</div>}
-        {message && <div className="success-message" style={{ color: "green", marginBottom: "10px" }}>{message}</div>}
+      <div className="login-glow"></div>
+      <div className="login-grid"></div>
 
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-          <input
-            type="text"
-            name="name"
-            placeholder="Full Name (e.g., Bruce Wayne)"
-            value={form.name}
-            onChange={handleChange}
-            required
-            style={{ padding: '10px', borderRadius: '4px', border: '1px solid #ccc' }}
-          />
-          <input
-            type="email"
-            name="email"
-            placeholder="Email Address"
-            value={form.email}
-            onChange={handleChange}
-            required
-            style={{ padding: '10px', borderRadius: '4px', border: '1px solid #ccc' }}
-          />
-          <input
-            type="password"
-            name="password"
-            placeholder="Create a Password"
-            value={form.password}
-            onChange={handleChange}
-            required
-            style={{ padding: '10px', borderRadius: '4px', border: '1px solid #ccc' }}
-          />
+      {/* Absolute positioned back button */}
+      <Link to="/" className="back-button">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        Back to Home
+      </Link>
+
+      <div className="login-wrapper">
+        <div className="login-card">
+          <div className="login-header">
+            <div className="logo-badge">HR</div>
+            <h2>Create an Account</h2>
+            <p>Join the HRMS Career Portal</p>
+          </div>
           
-          <button type="submit" style={{ padding: '12px', backgroundColor: '#ea580c', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>
-            Sign Up
-          </button>
-        </form>
+          {error && <div className="error-banner">{error}</div>}
+          {message && <div className="success-message">{message}</div>}
 
-        <p style={{ marginTop: '20px', textAlign: 'center', fontSize: '0.9rem' }}>
-          Already have an account? <Link to="/login" style={{ color: '#ea580c', fontWeight: 'bold' }}>Login here</Link>
-        </p>
+          <form onSubmit={handleSubmit} className="login-form">
+            <div className="form-group">
+              <label>Full Name</label>
+              <input
+                type="text"
+                name="name"
+                placeholder="e.g. Bruce Wayne"
+                value={form.name}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            
+            <div className="form-group">
+              <label>Email Address</label>
+              <input
+                type="email"
+                name="email"
+                placeholder="name@company.com"
+                value={form.email}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            
+            <div className="form-group">
+              <label>Password</label>
+              <input
+                type="password"
+                name="password"
+                placeholder="Create a Secure Password"
+                value={form.password}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            
+            <button type="submit" className="submit-btn" disabled={loading}>
+              {loading ? <span className="loader"></span> : "Sign Up"}
+            </button>
+          </form>
+
+          <div className="login-footer">
+            Already have an account? <Link to="/login">Login here</Link>
+          </div>
+        </div>
       </div>
     </div>
   );

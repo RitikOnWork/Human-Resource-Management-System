@@ -6,8 +6,8 @@ function CandidateNavbar() {
   return (
     <nav className="candidate-navbar">
       <div className="nav-brand">
-        <div className="brand-badge">NY</div>
-        <h2>Nagar Yukt Careers</h2>
+        <div className="brand-badge">HR</div>
+        <h2>HRMS Careers</h2>
       </div>
 
       <div className="nav-links">
