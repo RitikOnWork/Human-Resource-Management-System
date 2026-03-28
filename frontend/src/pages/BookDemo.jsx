@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { Hand } from "lucide-react";
 import "./auth/login.css"; // Reuse the luxurious dark theme auth CSS
 
 function BookDemo() {
@@ -30,8 +31,8 @@ function BookDemo() {
       <div className="login-wrapper" style={{ maxWidth: '500px' }}>
         <div className="login-card">
           <div className="login-header">
-            <div className="logo-badge" style={{ background: 'linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%)', boxShadow: '0 4px 15px rgba(6, 182, 212, 0.4)' }}>
-              👋
+            <div className="logo-badge" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%)', boxShadow: '0 4px 15px rgba(6, 182, 212, 0.4)' }}>
+              <Hand color="#ffffff" size={24} />
             </div>
             <h2>Book a Demo</h2>
             <p>See exactly how our platform fits your organization.</p>

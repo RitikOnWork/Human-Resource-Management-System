@@ -6,6 +6,11 @@
 }
 
 /* The Top Navbar */
+@keyframes slideDownFade {
+  from { transform: translateY(-100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
 .candidate-navbar {
   display: flex;
   justify-content: space-between;
@@ -16,6 +21,7 @@
   position: sticky;
   top: 0;
   z-index: 100;
+  animation: slideDownFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* The Brand Logo */
@@ -32,6 +38,12 @@
   padding: 8px 12px;
   border-radius: 8px;
   font-size: 1.2rem;
+  transition: all 0.3s ease;
+}
+
+.nav-brand:hover .brand-badge {
+  transform: rotate(10deg) scale(1.1);
+  box-shadow: 0 0 15px rgba(139, 92, 246, 0.4);
 }
 
 .nav-brand h2 {
@@ -52,17 +64,33 @@
   font-weight: 600;
   font-size: 1.05rem;
   padding-bottom: 5px;
-  border-bottom: 2px solid transparent;
-  transition: all 0.2s ease;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.nav-item::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 50%;
+  background: #ea580c;
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+  border-radius: 2px;
 }
 
 .nav-item:hover {
   color: #ea580c;
 }
 
+.nav-item:hover::after, .nav-item.active::after {
+  width: 100%;
+}
+
 .nav-item.active {
   color: #ea580c;
-  border-bottom: 2px solid #ea580c;
 }
 
 /* The Content Area */

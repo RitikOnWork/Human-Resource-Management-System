@@ -33,17 +33,7 @@ function PublicInfo() {
   const pageData = content[path] || { title: "Coming Soon", text: "We are currently updating this section." };
 
   return (
-    <div className="landing-page dark-premium">
-      {/* Simple Header */}
-      <header className="landing-header">
-         <div className="container header-container">
-            <Link to="/" className="brand" style={{textDecoration: 'none'}}>
-              <div className="brand-logo">HR</div>
-              <span className="brand-text">HRMS</span>
-            </Link>
-         </div>
-      </header>
-
+    <>
       {/* Dynamic Content */}
       <div className="container" style={{ padding: '100px 24px', minHeight: '65vh' }}>
         <h1 style={{ fontSize: '3rem', color: '#f9fafb', marginBottom: '20px', letterSpacing: '-0.02em', fontWeight: '800' }}>{pageData.title}</h1>
@@ -53,16 +43,7 @@ function PublicInfo() {
           ← Back to Home
         </Link>
       </div>
-
-      {/* Footer */}
-      <footer className="landing-footer">
-        <div className="container footer-container">
-          <div className="footer-copyright">
-            <p>&copy; 2026 HRMS. All Rights Reserved.</p>
-          </div>
-        </div>
-      </footer>
-    </div>
+    </>
   );
 }
 

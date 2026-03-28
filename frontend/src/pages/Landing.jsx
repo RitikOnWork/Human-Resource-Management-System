@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Lock, Unlock, MapPin, Clock, CheckCircle, FileText, Bot, Target, Star } from 'lucide-react';
 import './landing.css';
 
 const Landing = () => {
@@ -30,35 +31,11 @@ const Landing = () => {
         { value: '85%', label: 'PROFILE MATCH' },
         { value: '2', label: 'UPCOMING INTERVIEWS' }
       ]
-    },
-    citizen: {
-      title: 'Public Transparency',
-      metrics: [
-        { value: '5', label: 'OPEN GRIEVANCES' },
-        { value: '12', label: 'RESOLVED WEEKLY' },
-        { value: '99%', label: 'SLA MET' }
-      ]
     }
   };
 
   return (
-    <div className="landing-page">
-      {/* --- Navigation Header --- */}
-      <header className="landing-header">
-        <div className="container header-container">
-          <div className="brand">
-            <div className="brand-logo">HR</div>
-            <span className="brand-text">HRMS</span>
-          </div>
-          <nav className="header-nav">
-            <Link to="/platform" className="nav-link">Platform</Link>
-            <Link to="/solutions" className="nav-link">Solutions</Link>
-            <div className="auth-buttons">
-              <Link to="/login" className="btn-signup">Sign In / Register</Link>
-            </div>
-          </nav>
-        </div>
-      </header>
+    <>
 
       {/* --- Hero Section --- */}
       <section className="hero-section dark-premium">
@@ -144,11 +121,13 @@ const Landing = () => {
                   <div className={`map-zone ${inZone ? 'active' : ''}`}>
                     <span className="zone-label">Office Zone</span>
                   </div>
-                  <div className={`map-pin ${inZone ? 'inside' : 'outside'}`}>📍</div>
+                  <div className={`map-pin ${inZone ? 'inside' : 'outside'}`} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <MapPin size={24} color={inZone ? '#10b981' : '#ef4444'} />
+                  </div>
                 </div>
                 <div className="mobile-bottom">
-                  <div className={`status-pill ${inZone ? 'success' : 'locked'}`}>
-                    {inZone ? '🔓 Inside Zone' : '🔒 Outside Zone'}
+                  <div className={`status-pill ${inZone ? 'success' : 'locked'}`} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    {inZone ? <><Unlock size={16} /> Inside Zone</> : <><Lock size={16} /> Outside Zone</>}
                   </div>
                 </div>
               </div>
@@ -176,19 +155,19 @@ const Landing = () => {
 
               <div className="demo-feature-list">
                 <div className="demo-feature-item">
-                  <span className="df-icon">🔒</span>
+                  <span className="df-icon" style={{ display: 'flex', alignItems: 'center' }}><Lock size={20} color="#a78bfa" /></span>
                   <span>Location-locked attendance</span>
                 </div>
                 <div className="demo-feature-item">
-                  <span className="df-icon">📍</span>
+                  <span className="df-icon" style={{ display: 'flex', alignItems: 'center' }}><MapPin size={20} color="#a78bfa" /></span>
                   <span>GPS + Geo-fence verification</span>
                 </div>
                 <div className="demo-feature-item">
-                  <span className="df-icon">⏰</span>
+                  <span className="df-icon" style={{ display: 'flex', alignItems: 'center' }}><Clock size={20} color="#a78bfa" /></span>
                   <span>Timestamp + location logged</span>
                 </div>
                 <div className="demo-feature-item">
-                  <span className="df-icon">✔️</span>
+                  <span className="df-icon" style={{ display: 'flex', alignItems: 'center' }}><CheckCircle size={20} color="#a78bfa" /></span>
                   <span>Audit-proof records</span>
                 </div>
               </div>
@@ -209,25 +188,25 @@ const Landing = () => {
           {/* Workflow Diagram */}
           <div className="ai-workflow">
             <div className="ai-flow-step">
-              <div className="ai-circle">📝</div>
+              <div className="ai-circle"><FileText size={32} color="#06b6d4" /></div>
               <span>Job Description</span>
             </div>
             <div className="ai-arrow">→</div>
             
             <div className="ai-flow-step">
-              <div className="ai-circle">🤖</div>
+              <div className="ai-circle"><Bot size={32} color="#06b6d4" /></div>
               <span>AI Analysis</span>
             </div>
             <div className="ai-arrow">→</div>
 
             <div className="ai-flow-step">
-              <div className="ai-circle">🎯</div>
+              <div className="ai-circle"><Target size={32} color="#06b6d4" /></div>
               <span>Skill Matching</span>
             </div>
             <div className="ai-arrow">→</div>
 
             <div className="ai-flow-step">
-              <div className="ai-circle">⭐</div>
+              <div className="ai-circle"><Star size={32} color="#06b6d4" /></div>
               <span>Ranked Shortlist</span>
             </div>
           </div>
@@ -292,12 +271,6 @@ const Landing = () => {
                 onClick={() => setActiveTab('candidate')}
               >
                 Candidate
-              </button>
-              <button 
-                className={`role-tab ${activeTab === 'citizen' ? 'active' : ''}`}
-                onClick={() => setActiveTab('citizen')}
-              >
-                Citizen
               </button>
             </div>
           </div>
@@ -426,20 +399,7 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* --- Footer --- */}
-      <footer className="landing-footer">
-        <div className="container footer-container">
-          <div className="footer-links">
-            <Link to="/privacy">Privacy Policy</Link>
-            <Link to="/compliance">Enterprise Security</Link>
-            <Link to="/contact">Contact Support</Link>
-          </div>
-          <div className="footer-copyright">
-            <p>&copy; 2026 HRMS. All Rights Reserved.</p>
-          </div>
-        </div>
-      </footer>
-    </div>
+    </>
   );
 };
 

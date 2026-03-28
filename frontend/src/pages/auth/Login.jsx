@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { Mail, Lock, User, ArrowLeft, Eye, EyeOff } from "lucide-react";
 import "./login.css";
 
 function Login() {
@@ -86,12 +87,8 @@ function Login() {
       <div className="login-glow"></div>
       <div className="login-grid"></div>
 
-      {/* Absolute positioned back button */}
       <Link to="/" className="back-button">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <line x1="19" y1="12" x2="5" y2="12"></line>
-          <polyline points="12 19 5 12 12 5"></polyline>
-        </svg>
+        <ArrowLeft size={20} />
         Back to Home
       </Link>
 
@@ -110,25 +107,31 @@ function Login() {
             {isSignUp && (
               <div className="form-group">
                 <label>Full Name</label>
-                <input
-                  type="text"
-                  placeholder="e.g. Bruce Wayne"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  required
-                />
+                <div className="input-with-left-icon">
+                  <User className="input-icon" size={20} />
+                  <input
+                    type="text"
+                    placeholder="e.g. Bruce Wayne"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required
+                  />
+                </div>
               </div>
             )}
 
             <div className="form-group">
               <label>Email Address</label>
-              <input
-                type="email"
-                placeholder="role@company.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
+              <div className="input-with-left-icon">
+                <Mail className="input-icon" size={20} />
+                <input
+                  type="email"
+                  placeholder="role@company.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
             </div>
 
             <div className="form-group">
@@ -136,7 +139,8 @@ function Login() {
                 <label>Password</label>
                 {!isSignUp && <a href="#" className="forgot-link">Forgot password?</a>}
               </div>
-              <div className="input-with-icon">
+              <div className="input-with-left-icon">
+                <Lock className="input-icon" size={20} />
                 <input
                   type={showPassword ? "text" : "password"}
                   placeholder="Enter your password"
@@ -149,7 +153,7 @@ function Login() {
                   className="toggle-btn"
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  {showPassword ? "Hide" : "Show"}
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
               </div>
             </div>

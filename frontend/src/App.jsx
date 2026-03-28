@@ -1,108 +1,151 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import React, { Suspense, lazy } from "react";
+import { Routes, Route, Navigate, Outlet } from "react-router-dom";
 
-/* Public */
-import Landing from "./pages/Landing";
-import Login from "./pages/auth/Login";
-/* Auth wrapper */
+// Standard components that need to be loaded immediately
 import ProtectedRoute from "./components/ProtectedRoute";
+import PublicLayout from "./components/PublicLayout";
 
-/* Dashboards only */
-import HRDashboard from "./pages/hr/Dashboard";
-import AdminDashboard from "./pages/admin/Dashboard";
-import CandidateDashboard from "./pages/candidate/Dashboard";
-import EmployeeDashboard from "./pages/employee/EmployeeDashboard";
-import CandidateJobs from "./pages/candidate/Jobs";
-import CandidateApplications from "./pages/candidate/Applications";
-import CreateEmployee from "./pages/admin/CreateEmployee";
-import AdminEmployees from "./pages/admin/AdminEmployees";
-import AdminCreateJob from "./pages/admin/CreateJob";
-import PublicInfo from "./pages/PublicInfo";
-import Platform from "./pages/Platform";
-import Solutions from "./pages/Solutions";
-import BookDemo from "./pages/BookDemo";
+// --- LAZY-LOADED COMPONENTS FOR PERFORMANCE OPTIMIZATION ---
+
+// Public Pages
+const Landing = lazy(() => import("./pages/Landing"));
+const Login = lazy(() => import("./pages/auth/Login"));
+const PublicInfo = lazy(() => import("./pages/PublicInfo"));
+const Platform = lazy(() => import("./pages/Platform"));
+const Solutions = lazy(() => import("./pages/Solutions"));
+const BookDemo = lazy(() => import("./pages/BookDemo"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+
+// HR Dashboards
+const HRDashboard = lazy(() => import("./pages/hr/Dashboard"));
+
+// Admin Dashboards
+const AdminDashboard = lazy(() => import("./pages/admin/Dashboard"));
+const CreateEmployee = lazy(() => import("./pages/admin/CreateEmployee"));
+const AdminEmployees = lazy(() => import("./pages/admin/AdminEmployees"));
+const AdminCreateJob = lazy(() => import("./pages/admin/CreateJob"));
+
+// Candidate Dashboards
+const CandidateDashboard = lazy(() => import("./pages/candidate/Dashboard"));
+const CandidateJobs = lazy(() => import("./pages/candidate/Jobs"));
+const CandidateApplications = lazy(() => import("./pages/candidate/Applications"));
+
+// Employee Dashboards
+const EmployeeDashboard = lazy(() => import("./pages/employee/EmployeeDashboard"));
+
+// A simple loading fallback for Suspense
+const GlobalLoader = () => (
+  <div style={{ display: 'flex', height: '100vh', justifyContent: 'center', alignItems: 'center', backgroundColor: '#0b0f19' }}>
+    <div style={{ color: '#a78bfa', fontSize: '1.5rem', fontWeight: 'bold' }}>Loading...</div>
+  </div>
+);
 
 function App() {
   return (
-    
-    <Routes>
-      {/* Public */}
-      <Route path="/" element={<Landing />} />
-      <Route path="/login" element={<Login />} />
-      {/* Public Info Pages */}
-        <Route path="/platform" element={<Platform />} />
-        <Route path="/solutions" element={<Solutions />} />
+    <Suspense fallback={<GlobalLoader />}>
+      <Routes>
+        {/* --- PUBLIC LAYOUT ROUTES --- */}
+        <Route element={<PublicLayout />}>
+          <Route path="/" element={<Landing />} />
+          <Route path="/platform" element={<Platform />} />
+          <Route path="/solutions" element={<Solutions />} />
+          <Route path="/privacy" element={<PublicInfo />} />
+          <Route path="/compliance" element={<PublicInfo />} />
+          <Route path="/contact" element={<PublicInfo />} />
+        </Route>
+
+        {/* --- STANDALONE / AUTH PAGES --- */}
+        <Route path="/login" element={<Login />} />
         <Route path="/demo" element={<BookDemo />} />
-        <Route path="/privacy" element={<PublicInfo />} />
-        <Route path="/compliance" element={<PublicInfo />} />
-        <Route path="/contact" element={<PublicInfo />} />
-      {/* HR Dashboard */}
-      <Route
-        path="/hr/dashboard"
-        element={
-          <ProtectedRoute role="admin">
-            <HRDashboard />
-          </ProtectedRoute>
-        }
-      />
-<Route path="/hr/create-employee" element={
-  <ProtectedRoute role="admin"> {/* Changed from 'hr' to 'admin' */}
-    <CreateEmployee />
-  </ProtectedRoute>
-} />
-<Route path="/hr/create-employee" element={
-  <ProtectedRoute role="hr"> {/* Changed from 'hr' to 'admin' */}
-    <CreateEmployee />
-  </ProtectedRoute>
-} />
-      {/* Admin Dashboard */}
-      <Route
-        path="/admin/dashboard"
-        element={
-          <ProtectedRoute role="admin">
-            <AdminDashboard />
-          </ProtectedRoute>
-        }
-      />
 
-      {/* Candidate Dashboard */}
-      <Route
-        path="/candidate/dashboard"
-        element={
-          <ProtectedRoute role="candidate">
-            <CandidateDashboard />
-          </ProtectedRoute>
-        }
-      />
+        {/* --- SECURE ADMIN / HR ROUTES --- */}
+        <Route
+          path="/hr/dashboard"
+          element={
+            <ProtectedRoute role="admin">
+              <HRDashboard />
+            </ProtectedRoute>
+          }
+        />
+        
+        {/* Fixed Security: Made Admin specific, removed duplicates */}
+        <Route
+          path="/hr/create-employee"
+          element={
+            <ProtectedRoute role="admin">
+              <CreateEmployee />
+            </ProtectedRoute>
+          }
+        />
 
-      {/* Employee Dashboard */}
-      <Route
-        path="/employee/dashboard"
-        element={
-          <ProtectedRoute role="employee">
-            <EmployeeDashboard />
-          </ProtectedRoute>
-        }
-      />
-<Route path="/candidate/jobs" element={
-  <ProtectedRoute role="candidate">
-    <CandidateJobs />
-  </ProtectedRoute>
-} />
-<Route path="/admin/employees" element={
-  <ProtectedRoute role="admin">
-    <AdminEmployees />
-  </ProtectedRoute>
-} />
-<Route path="/admin/create-job" element={<AdminCreateJob />} />
-<Route path="/candidate/applications" element={
-  <ProtectedRoute role="candidate">
-    <CandidateApplications />
-  </ProtectedRoute>
-} />
-  
-      {/* Fallback */}
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+        <Route
+          path="/admin/dashboard"
+          element={
+            <ProtectedRoute role="admin">
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/employees"
+          element={
+            <ProtectedRoute role="admin">
+              <AdminEmployees />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* SECURED ROUTE: Previously this was completely public! */}
+        <Route
+          path="/admin/create-job"
+          element={
+            <ProtectedRoute role="admin">
+              <AdminCreateJob />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* --- SECURE CANDIDATE ROUTES --- */}
+        <Route
+          path="/candidate/dashboard"
+          element={
+            <ProtectedRoute role="candidate">
+              <CandidateDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/candidate/jobs"
+          element={
+            <ProtectedRoute role="candidate">
+              <CandidateJobs />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/candidate/applications"
+          element={
+            <ProtectedRoute role="candidate">
+              <CandidateApplications />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* --- SECURE EMPLOYEE ROUTES --- */}
+        <Route
+          path="/employee/dashboard"
+          element={
+            <ProtectedRoute role="employee">
+              <EmployeeDashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* --- NOT FOUND FALLBACK --- */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </Suspense>
   );
 }
 
