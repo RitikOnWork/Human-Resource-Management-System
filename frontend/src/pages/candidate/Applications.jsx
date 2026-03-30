@@ -35,7 +35,7 @@ function CandidateApplications() {
               <h4>{app.job_title}</h4>
               <p>Department: {app.department}</p>
               <p>Status: <strong>{app.status}</strong></p>
-              <p>Applied On: {app.applied_on}</p>
+              <p>Applied On: {app.applied_on ? new Date(app.applied_on).toLocaleDateString() : ''}</p>
             </div>
           ))}
         </div>

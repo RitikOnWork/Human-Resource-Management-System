@@ -6,6 +6,7 @@ function Signup() {
   const [form, setForm] = useState({ name: "", email: "", password: "" });
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -16,6 +17,7 @@ function Signup() {
     e.preventDefault();
     setError("");
     setMessage("");
+    setLoading(true);
 
     try {
       const res = await fetch("/api/auth/signup", {
@@ -35,6 +37,8 @@ function Signup() {
       }
     } catch (err) {
       setError("Network error. Please make sure the backend is running.");
+    } finally {
+      setLoading(false);
     }
   };
 

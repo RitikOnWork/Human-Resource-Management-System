@@ -26,6 +26,7 @@ function Login() {
         // --- SIGNUP FLOW ---
         const response = await fetch("/api/auth/signup", {
           method: "POST",
+          credentials: "include",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ name, email, password }),
         });

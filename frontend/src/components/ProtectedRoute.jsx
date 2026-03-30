@@ -10,14 +10,17 @@ function ProtectedRoute({ children, role }) {
       credentials: "include",
     })
       .then((res) => {
-        if (!res.ok) {
-          throw new Error("Unauthorized");
-        }
+        if (!res.ok) throw new Error("Unauthorized");
         return res.json();
       })
       .then((data) => {
-        if (data && data.user && (data.user.role || '').toLowerCase() === (role || '').toLowerCase()) {
-          setAuthorized(true);
+        if (data && data.user) {
+          const userRole = (data.user.role || "").toLowerCase();
+          const requiredRole = (role || "").toLowerCase();
+          // Admin can access admin and hr routes
+          if (userRole === requiredRole || (userRole === "admin" && requiredRole === "hr")) {
+            setAuthorized(true);
+          }
         }
         setLoading(false);
       })
@@ -28,7 +31,11 @@ function ProtectedRoute({ children, role }) {
   }, [role]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div style={{ display: 'flex', height: '100vh', justifyContent: 'center', alignItems: 'center', backgroundColor: '#0b0f19' }}>
+        <div style={{ color: '#a78bfa', fontSize: '1.2rem' }}>Authenticating...</div>
+      </div>
+    );
   }
 
   if (!authorized) {

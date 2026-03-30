@@ -16,6 +16,9 @@ const Solutions = lazy(() => import("./pages/Solutions"));
 const BookDemo = lazy(() => import("./pages/BookDemo"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
+// Auth Pages
+const Signup = lazy(() => import("./pages/auth/Signup"));
+
 // HR Dashboards
 const HRDashboard = lazy(() => import("./pages/hr/Dashboard"));
 
@@ -24,6 +27,7 @@ const AdminDashboard = lazy(() => import("./pages/admin/Dashboard"));
 const CreateEmployee = lazy(() => import("./pages/admin/CreateEmployee"));
 const AdminEmployees = lazy(() => import("./pages/admin/AdminEmployees"));
 const AdminCreateJob = lazy(() => import("./pages/admin/CreateJob"));
+const AdminApplications = lazy(() => import("./pages/admin/Applications"));
 
 // Candidate Dashboards
 const CandidateDashboard = lazy(() => import("./pages/candidate/Dashboard"));
@@ -56,19 +60,19 @@ function App() {
 
         {/* --- STANDALONE / AUTH PAGES --- */}
         <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
         <Route path="/demo" element={<BookDemo />} />
 
         {/* --- SECURE ADMIN / HR ROUTES --- */}
         <Route
           path="/hr/dashboard"
           element={
-            <ProtectedRoute role="admin">
+            <ProtectedRoute role="hr">
               <HRDashboard />
             </ProtectedRoute>
           }
         />
-        
-        {/* Fixed Security: Made Admin specific, removed duplicates */}
+
         <Route
           path="/hr/create-employee"
           element={
@@ -102,6 +106,15 @@ function App() {
           element={
             <ProtectedRoute role="admin">
               <AdminCreateJob />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/job/:jobId/applications"
+          element={
+            <ProtectedRoute role="admin">
+              <AdminApplications />
             </ProtectedRoute>
           }
         />

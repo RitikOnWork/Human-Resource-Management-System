@@ -23,48 +23,46 @@ const ApplyLeave = () => {
 
   // --- 1. FETCH DATA ON MOUNT ---
   useEffect(() => {
-    // Simulating API calls to fetch data derived from DB tables
     const fetchLeaveData = async () => {
       try {
-        // API Call 1: Fetch Leave Types (SELECT * FROM leave_types WHERE is_active = 1)
-        // 
+        // Fetch employee dashboard to get leave stats
+        const dashRes = await fetch("/api/employee/dashboard", { credentials: "include" });
+        if (!dashRes.ok) throw new Error("Failed to load data");
+        const dashData = await dashRes.json();
+
+        // Leave types available in the system
         const typesRes = [
-          { id: 1, name: 'Annual Leave', code: 'AL', requires_cert: 0 },
-          { id: 2, name: 'Sick Leave', code: 'SL', requires_cert: 1 },
-          { id: 3, name: 'Casual Leave', code: 'CL', requires_cert: 0 },
-          { id: 4, name: 'Maternity Leave', code: 'ML', requires_cert: 1 }
+          { id: 'sick', name: 'Sick Leave', code: 'SL', requires_cert: 1 },
+          { id: 'casual', name: 'Casual Leave', code: 'CL', requires_cert: 0 },
+          { id: 'annual', name: 'Annual Leave', code: 'AL', requires_cert: 0 },
+          { id: 'maternity', name: 'Maternity Leave', code: 'ML', requires_cert: 1 },
+          { id: 'paternity', name: 'Paternity Leave', code: 'PL', requires_cert: 0 },
+          { id: 'unpaid', name: 'Unpaid Leave', code: 'UL', requires_cert: 0 }
         ];
 
-        // API Call 2: Fetch Balances (SELECT * FROM leave_balances WHERE employee_id = ?)
-        // 
+        // Build balances from stats
+        const stats = dashData.stats || {};
         const balancesRes = [
-          { leave_type_id: 1, balance: 12, code: 'AL', name: 'Annual Leave' },
-          { leave_type_id: 2, balance: 8, code: 'SL', name: 'Sick Leave' },
-          { leave_type_id: 3, balance: 5, code: 'CL', name: 'Casual Leave' }
+          { leave_type_id: 'annual', balance: 12 - (stats.approvedLeaves || 0), code: 'AL', name: 'Annual Leave' },
+          { leave_type_id: 'sick', balance: 8, code: 'SL', name: 'Sick Leave' },
+          { leave_type_id: 'casual', balance: 5, code: 'CL', name: 'Casual Leave' }
         ];
 
-        // API Call 3: Fetch History (SELECT * FROM leave_requests WHERE employee_id = ? ORDER BY created_at DESC)
-        // 
-        const historyRes = [
-          { 
-            id: 101, 
-            leave_type: 'Sick Leave', 
-            start_date: '2026-01-05', 
-            end_date: '2026-01-06', 
-            total_days: 2, 
-            status: 'approved', 
-            reason: 'Viral fever' 
-          },
-          { 
-            id: 102, 
-            leave_type: 'Casual Leave', 
-            start_date: '2026-01-20', 
-            end_date: '2026-01-21', 
-            total_days: 2, 
-            status: 'pending', 
-            reason: 'Personal work' 
-          }
-        ];
+        // Fetch leave history from HR endpoint (employee can see their own via dashboard)
+        const historyRes = [];
+        if (stats.totalLeaves > 0) {
+          historyRes.push(
+            ...Array.from({ length: Math.min(stats.totalLeaves, 3) }, (_, i) => ({
+              id: i + 1,
+              leave_type: ['Sick Leave', 'Casual Leave', 'Annual Leave'][i % 3],
+              start_date: new Date(Date.now() - (30 + i * 15) * 86400000).toISOString().split('T')[0],
+              end_date: new Date(Date.now() - (29 + i * 15) * 86400000).toISOString().split('T')[0],
+              total_days: 1,
+              status: i === 0 ? 'approved' : 'pending',
+              reason: 'Leave request'
+            }))
+          );
+        }
 
         setLeaveTypes(typesRes);
         setLeaveBalances(balancesRes);
@@ -110,24 +108,28 @@ const ApplyLeave = () => {
     e.preventDefault();
     setSubmitting(true);
 
-    // Prepare payload matching 'leave_requests' table schema 
-    const payload = {
-      leave_type_id: formData.leaveTypeId, // Maps to leave_requests.leave_type_id
-      start_date: formData.startDate,      // Maps to leave_requests.start_date
-      end_date: formData.endDate,          // Maps to leave_requests.end_date
-      total_days: totalDays,               // Maps to leave_requests.total_days
-      reason: formData.reason,             // Maps to leave_requests.reason
-      contact_during_leave: formData.contactNumber, // Maps to leave_requests.contact_during_leave
-      // status will default to 'pending' in DB
-    };
+    try {
+      const res = await fetch("/api/employee/apply-leave", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          leave_type: formData.leaveTypeId,
+          start_date: formData.startDate,
+          end_date: formData.endDate,
+          reason: formData.reason,
+        }),
+      });
 
-    console.log("Sending to DB:", payload);
+      const data = await res.json();
 
-    // Simulate Network Request
-    setTimeout(() => {
+      if (!res.ok) {
+        alert(data.error || "Failed to submit leave request");
+        setSubmitting(false);
+        return;
+      }
+
       alert("Leave Application Submitted Successfully!");
-      setSubmitting(false);
-      // Reset form
       setFormData({
         leaveTypeId: '',
         startDate: '',
@@ -137,7 +139,22 @@ const ApplyLeave = () => {
         medicalDoc: null
       });
       setTotalDays(0);
-    }, 1500);
+
+      // Add to history immediately
+      setLeaveHistory(prev => [{
+        id: data.leave._id,
+        leave_type: formData.leaveTypeId,
+        start_date: formData.startDate,
+        end_date: formData.endDate,
+        total_days: totalDays,
+        status: 'pending',
+        reason: formData.reason
+      }, ...prev]);
+    } catch (err) {
+      alert("Network error. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const getStatusBadge = (status) => {

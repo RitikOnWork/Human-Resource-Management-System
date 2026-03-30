@@ -1,47 +1,47 @@
 import React, { useEffect, useState } from "react";
-import EmployeeSidebar from "./EmployeeSidebar"; 
-import ApplyLeave from "./ApplyLeave"; // ✅ IMPORT ADDED
+import { useNavigate } from "react-router-dom";
+import EmployeeSidebar from "./EmployeeSidebar";
+import ApplyLeave from "./ApplyLeave";
 import "./EmployeeDashboard.css";
 
 function EmployeeDashboard() {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [data, setData] = useState(null);
   const [currentTime, setCurrentTime] = useState(new Date());
 
   // --- 1. Fetch Data Logic ---
   useEffect(() => {
     if (activeTab === 'dashboard') {
+        setLoading(true);
+        setError(null);
         fetch("/api/employee/dashboard", { credentials: "include" })
         .then((res) => {
-            if (!res.ok) throw new Error("Unauthorized");
+            if (!res.ok) throw new Error("Failed to load dashboard");
             return res.json();
         })
         .then((d) => {
             const enrichedData = {
                 ...d,
                 stats: {
+                    ...d.stats,
                     aiScore: 9.2,
-                    attendanceRate: 96,
-                    leavesBalance: 12,
+                    attendanceRate: d.stats?.attendanceDaysThisMonth ? Math.min(Math.round((d.stats.attendanceDaysThisMonth / 22) * 100), 100) : 0,
+                    leavesBalance: (d.stats?.totalLeaves || 0) - (d.stats?.approvedLeaves || 0),
                     tasksCompleted: 45,
                     rank: "Top 5%",
                     jioHazariStatus: "In Zone"
                 },
-                performanceHistory: [6.5, 7.0, 7.8, 8.2, 8.9, 9.2]
+                performanceHistory: d.performanceHistory || [6.5, 7.0, 7.8, 8.2, 8.9, 9.2]
             };
             setData(enrichedData);
             setLoading(false);
         })
         .catch((err) => {
-            console.warn("Using Fallback Data");
-            const fallbackData = {
-                user: { name: "Abhishek Pandey", email: "abhishek@municipal.gov", role: "Field Officer" },
-                employee: { employee_code: "EMP-2026-001", department: "Sanitation", position: "Supervisor", status: "Active" },
-                stats: { aiScore: 9.2, attendanceRate: 98, leavesBalance: 8, tasksCompleted: 142, rank: "Top 5%", jioHazariStatus: "In Zone" },
-                performanceHistory: [6.5, 7.2, 7.8, 8.5, 8.9, 9.2]
-            };
-            setData(fallbackData);
+            console.error("Dashboard load error:", err);
+            setError(err.message);
             setLoading(false);
         });
     }
@@ -65,8 +65,15 @@ function EmployeeDashboard() {
     return history.map((val, i) => `${(i / 5) * 100},${100 - (val / 10) * 100}`).join(" ");
   };
 
-  const handleLogout = () => {
-      alert("Logging out...");
+  const handleLogout = async () => {
+      try {
+        await fetch("/api/auth/logout", { method: "POST", credentials: "include" });
+        sessionStorage.removeItem("role");
+        navigate("/login");
+      } catch (err) {
+        console.error("Logout failed:", err);
+        navigate("/login");
+      }
   };
 
   return (
@@ -86,6 +93,11 @@ function EmployeeDashboard() {
             <>
                 {loading ? (
                     <div className="emp-loading"><div className="spinner"></div>Loading Dashboard...</div>
+                ) : error ? (
+                    <div className="emp-loading">
+                      <p style={{ color: '#ef4444' }}>Failed to load dashboard: {error}</p>
+                      <button onClick={() => setActiveTab('dashboard')} style={{ marginTop: '12px', padding: '8px 20px', background: '#6366f1', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer' }}>Retry</button>
+                    </div>
                 ) : (
                     <div className="emp-dashboard-container">
                         

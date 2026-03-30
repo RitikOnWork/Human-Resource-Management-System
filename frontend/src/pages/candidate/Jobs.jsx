@@ -74,18 +74,18 @@ function CandidateJobs() {
       <div className="job-list">
         {jobs.map((job) => {
           // Check if the current job is in our applied list or currently loading
-          const hasApplied = appliedJobs.includes(job.id);
-          const isApplying = applyingTo === job.id;
+          const hasApplied = appliedJobs.includes(job._id);
+          const isApplying = applyingTo === job._id;
 
           return (
-            <div key={job.id} className="job-card" style={{ border: '1px solid #ddd', padding: '15px', marginBottom: '10px' }}>
+            <div key={job._id} className="job-card" style={{ border: '1px solid #ddd', padding: '15px', marginBottom: '10px' }}>
               <h4>{job.title}</h4>
               <p>Department: {job.department}</p>
               <p>Location: {job.location}</p>
               <p>Vacancies: {job.vacancies}</p>
               
               <button 
-                onClick={() => handleApply(job.id)}
+                onClick={() => handleApply(job._id)}
                 disabled={hasApplied || isApplying} // Disable the button if already applied
                 style={{ 
                   // Change color to green if applied, otherwise keep it orange
