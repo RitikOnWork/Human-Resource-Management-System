@@ -6,7 +6,6 @@ const Employee = require("../models/Employee");
 const Department = require("../models/Department");
 const Attendance = require("../models/Attendance");
 const LeaveRequest = require("../models/LeaveRequest");
-const Application = require("../models/Application");
 
 // All HR routes require hr or admin role
 router.use(requireRole("hr", "admin"));
@@ -25,9 +24,7 @@ router.get("/user", async (req, res) => {
 // GET /api/hr/employees
 router.get("/employees", async (req, res) => {
   try {
-    const employees = await Employee.find()
-      .populate("user", "name email")
-      .sort({ createdAt: -1 });
+    const employees = await Employee.find().populate("user", "name email").sort({ createdAt: -1 });
     res.json({ employees });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -135,9 +132,17 @@ router.post("/leave-requests/:id/reject", async (req, res) => {
 // POST /api/hr/create-employee
 router.post("/create-employee", async (req, res) => {
   try {
-    const { candidate_id, employee_code, department, designation, pay_grade, date_of_joining } = req.body;
+    const { candidate_id, employee_code, department, designation, pay_grade, date_of_joining } =
+      req.body;
 
-    if (!candidate_id || !employee_code || !department || !designation || !pay_grade || !date_of_joining) {
+    if (
+      !candidate_id ||
+      !employee_code ||
+      !department ||
+      !designation ||
+      !pay_grade ||
+      !date_of_joining
+    ) {
       return res.status(400).json({ error: "All fields are required" });
     }
 
@@ -164,11 +169,7 @@ router.post("/create-employee", async (req, res) => {
     });
 
     // Ensure department exists
-    await Department.findOneAndUpdate(
-      { name: department },
-      { name: department },
-      { upsert: true }
-    );
+    await Department.findOneAndUpdate({ name: department }, { name: department }, { upsert: true });
 
     res.status(201).json({ success: true, employee });
   } catch (err) {

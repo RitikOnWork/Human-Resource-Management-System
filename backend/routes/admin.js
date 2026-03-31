@@ -3,7 +3,6 @@ const router = express.Router();
 const { requireRole } = require("../middleware/auth");
 const Job = require("../models/Job");
 const Application = require("../models/Application");
-const Employee = require("../models/Employee");
 
 // All admin routes require admin role
 router.use(requireRole("admin"));
@@ -11,8 +10,7 @@ router.use(requireRole("admin"));
 // GET /api/admin/dashboard
 router.get("/dashboard", async (req, res) => {
   try {
-    const jobs = await Job.find()
-      .sort({ createdAt: -1 });
+    const jobs = await Job.find().sort({ createdAt: -1 });
     res.json(jobs);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -25,7 +23,9 @@ router.post("/create-job", async (req, res) => {
     const { title, department, location, vacancies, eligibility_rules } = req.body;
 
     if (!title || !department || !location || !vacancies) {
-      return res.status(400).json({ error: "Title, department, location, and vacancies are required" });
+      return res
+        .status(400)
+        .json({ error: "Title, department, location, and vacancies are required" });
     }
 
     const job = await Job.create({
