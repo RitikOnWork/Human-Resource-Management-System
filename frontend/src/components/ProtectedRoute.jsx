@@ -1,7 +1,7 @@
 import { Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
-function ProtectedRoute({ children, role }) {
+function ProtectedRoute({ children, roles }) {
   const [loading, setLoading] = useState(true);
   const [authorized, setAuthorized] = useState(false);
 
@@ -14,11 +14,18 @@ function ProtectedRoute({ children, role }) {
         return res.json();
       })
       .then((data) => {
+<<<<<<< HEAD
+        if (data && data.user && data.user.role) {
+          const userRole = data.user.role.toLowerCase();
+          const allowedRoles = roles.map(r => r.toLowerCase());
+          if (allowedRoles.includes(userRole)) {
+=======
         if (data && data.user) {
           const userRole = (data.user.role || "").toLowerCase();
           const requiredRole = (role || "").toLowerCase();
           // Admin can access admin and hr routes
           if (userRole === requiredRole || (userRole === "admin" && requiredRole === "hr")) {
+>>>>>>> 376d7df58767ed276fda46bd82d1aa5ba19cb3a8
             setAuthorized(true);
           }
         }
@@ -28,7 +35,7 @@ function ProtectedRoute({ children, role }) {
         setAuthorized(false);
         setLoading(false);
       });
-  }, [role]);
+  }, [roles]);
 
   if (loading) {
     return (

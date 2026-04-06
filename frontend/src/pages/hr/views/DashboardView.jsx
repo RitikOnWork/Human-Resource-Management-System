@@ -20,7 +20,7 @@ const DashboardView = ({
       <div className="welcome-header">
         <div>
           <h2>Welcome back, {(hrUser?.name || currentUser?.name || Data.currentUser.name).split(' ')[0]} ✨</h2>
-          <p>Here's your HR overview for Sunday, January 11, 2026</p>
+          <p>Here's your HR overview for {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
         </div>
       </div>
 

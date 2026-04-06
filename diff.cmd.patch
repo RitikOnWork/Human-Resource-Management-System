@@ -1,0 +1,549 @@
+diff --git a/frontend/src/App.jsx b/frontend/src/App.jsx
+index 705de96..72fd2ee 100644
+--- a/frontend/src/App.jsx
++++ b/frontend/src/App.jsx
+@@ -25,10 +25,8 @@ const CreateEmployee = lazy(() => import("./pages/admin/CreateEmployee"));
+ const AdminEmployees = lazy(() => import("./pages/admin/AdminEmployees"));
+ const AdminCreateJob = lazy(() => import("./pages/admin/CreateJob"));
+ 
+-// Candidate Dashboards
+-const CandidateDashboard = lazy(() => import("./pages/candidate/Dashboard"));
+-const CandidateJobs = lazy(() => import("./pages/candidate/Jobs"));
+-const CandidateApplications = lazy(() => import("./pages/candidate/Applications"));
++// Manager Dashboards
++const ManagerDashboard = lazy(() => import("./pages/manager/ManagerDashboard"));
+ 
+ // Employee Dashboards
+ const EmployeeDashboard = lazy(() => import("./pages/employee/EmployeeDashboard"));
+@@ -62,7 +60,7 @@ function App() {
+         <Route
+           path="/hr/dashboard"
+           element={
+-            <ProtectedRoute role="admin">
++            <ProtectedRoute roles={['admin', 'hr']}>
+               <HRDashboard />
+             </ProtectedRoute>
+           }
+@@ -70,9 +68,9 @@ function App() {
+         
+         {/* Fixed Security: Made Admin specific, removed duplicates */}
+         <Route
+-          path="/hr/create-employee"
++          path="/admin/create-employee"
+           element={
+-            <ProtectedRoute role="admin">
++            <ProtectedRoute roles={['admin']}>
+               <CreateEmployee />
+             </ProtectedRoute>
+           }
+@@ -81,7 +79,7 @@ function App() {
+         <Route
+           path="/admin/dashboard"
+           element={
+-            <ProtectedRoute role="admin">
++            <ProtectedRoute roles={['admin']}>
+               <AdminDashboard />
+             </ProtectedRoute>
+           }
+@@ -90,7 +88,7 @@ function App() {
+         <Route
+           path="/admin/employees"
+           element={
+-            <ProtectedRoute role="admin">
++            <ProtectedRoute roles={['admin']}>
+               <AdminEmployees />
+             </ProtectedRoute>
+           }
+@@ -100,34 +98,18 @@ function App() {
+         <Route
+           path="/admin/create-job"
+           element={
+-            <ProtectedRoute role="admin">
++            <ProtectedRoute roles={['admin']}>
+               <AdminCreateJob />
+             </ProtectedRoute>
+           }
+         />
+ 
+-        {/* --- SECURE CANDIDATE ROUTES --- */}
++        {/* --- SECURE MANAGER ROUTES --- */}
+         <Route
+-          path="/candidate/dashboard"
++          path="/manager/dashboard"
+           element={
+-            <ProtectedRoute role="candidate">
+-              <CandidateDashboard />
+-            </ProtectedRoute>
+-          }
+-        />
+-        <Route
+-          path="/candidate/jobs"
+-          element={
+-            <ProtectedRoute role="candidate">
+-              <CandidateJobs />
+-            </ProtectedRoute>
+-          }
+-        />
+-        <Route
+-          path="/candidate/applications"
+-          element={
+-            <ProtectedRoute role="candidate">
+-              <CandidateApplications />
++            <ProtectedRoute roles={['admin', 'hr', 'manager']}>
++              <ManagerDashboard />
+             </ProtectedRoute>
+           }
+         />
+@@ -136,7 +118,7 @@ function App() {
+         <Route
+           path="/employee/dashboard"
+           element={
+-            <ProtectedRoute role="employee">
++            <ProtectedRoute roles={['employee']}>
+               <EmployeeDashboard />
+             </ProtectedRoute>
+           }
+diff --git a/frontend/src/components/ProtectedRoute.jsx b/frontend/src/components/ProtectedRoute.jsx
+index 5cdeec6..f133e71 100644
+--- a/frontend/src/components/ProtectedRoute.jsx
++++ b/frontend/src/components/ProtectedRoute.jsx
+@@ -1,7 +1,7 @@
+ import { Navigate } from "react-router-dom";
+ import { useEffect, useState } from "react";
+ 
+-function ProtectedRoute({ children, role }) {
++function ProtectedRoute({ children, roles }) {
+   const [loading, setLoading] = useState(true);
+   const [authorized, setAuthorized] = useState(false);
+ 
+@@ -16,8 +16,12 @@ function ProtectedRoute({ children, role }) {
+         return res.json();
+       })
+       .then((data) => {
+-        if (data && data.user && (data.user.role || '').toLowerCase() === (role || '').toLowerCase()) {
+-          setAuthorized(true);
++        if (data && data.user && data.user.role) {
++          const userRole = data.user.role.toLowerCase();
++          const allowedRoles = roles.map(r => r.toLowerCase());
++          if (allowedRoles.includes(userRole)) {
++            setAuthorized(true);
++          }
+         }
+         setLoading(false);
+       })
+@@ -25,7 +29,7 @@ function ProtectedRoute({ children, role }) {
+         setAuthorized(false);
+         setLoading(false);
+       });
+-  }, [role]);
++  }, [roles]);
+ 
+   if (loading) {
+     return <div>Loading...</div>;
+diff --git a/frontend/src/pages/admin/Dashboard.jsx b/frontend/src/pages/admin/Dashboard.jsx
+index 0bb5ef5..348ca9a 100644
+--- a/frontend/src/pages/admin/Dashboard.jsx
++++ b/frontend/src/pages/admin/Dashboard.jsx
+@@ -45,11 +45,9 @@ function AdminDashboard() {
+             <p style={{ color: '#d1d5db', marginBottom: '20px' }}><strong>Vacancies:</strong> {job.vacancies}</p>
+             
+             <div style={{ marginTop: '15px' }}>
+-              <Link to={`/admin/job/${job.id}/applications`}>
+-                <button style={{ background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)', color: 'white', padding: '10px 16px', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', width: '100%' }}>
+-                  View Applications
++                <button onClick={() => alert("Applications view is under construction.")} style={{ background: 'linear-gradient(135deg, #4b5563 0%, #374151 100%)', color: '#9ca3af', padding: '10px 16px', border: 'none', borderRadius: '6px', cursor: 'not-allowed', fontWeight: 'bold', width: '100%' }}>
++                  View Applications (Coming Soon)
+                 </button>
+-              </Link>
+             </div>
+           </div>
+         ))}
+diff --git a/frontend/src/pages/auth/Login.jsx b/frontend/src/pages/auth/Login.jsx
+index 89bebbf..7189a68 100644
+--- a/frontend/src/pages/auth/Login.jsx
++++ b/frontend/src/pages/auth/Login.jsx
+@@ -1,13 +1,11 @@
+ import { useState } from "react";
+ import { useNavigate, Link } from "react-router-dom";
+-import { Mail, Lock, User, ArrowLeft, Eye, EyeOff } from "lucide-react";
++import { Mail, Lock, ArrowLeft, Eye, EyeOff } from "lucide-react";
+ import "./login.css";
+ 
+ function Login() {
+   const navigate = useNavigate();
+ 
+-  const [isSignUp, setIsSignUp] = useState(false);
+-  const [name, setName] = useState("");
+   const [email, setEmail] = useState("");
+   const [password, setPassword] = useState("");
+   const [showPassword, setShowPassword] = useState(false);
+@@ -22,33 +20,12 @@ function Login() {
+     setLoading(true);
+ 
+     try {
+-      if (isSignUp) {
+-        // --- SIGNUP FLOW ---
+-        const response = await fetch("/api/auth/signup", {
+-          method: "POST",
+-          headers: { "Content-Type": "application/json" },
+-          body: JSON.stringify({ name, email, password }),
+-        });
+-        
+-        const data = await response.json();
+-        
+-        if (!response.ok) {
+-          setError(data.error || "Failed to create account");
+-          setLoading(false);
+-          return;
+-        }
+-
+-        setMessage("Account created successfully! Please sign in.");
+-        setIsSignUp(false); // switch to login mode
+-        setPassword(""); // clear password
+-      } else {
+-        // --- LOGIN FLOW ---
+-        const response = await fetch("/api/auth/login", {
+-          method: "POST",
+-          credentials: "include",
+-          headers: { "Content-Type": "application/json" },
+-          body: JSON.stringify({ email, password }),
+-        });
++      const response = await fetch("/api/auth/login", {
++        method: "POST",
++        credentials: "include",
++        headers: { "Content-Type": "application/json" },
++        body: JSON.stringify({ email, password }),
++      });
+ 
+       const data = await response.json();
+ 
+@@ -58,16 +35,14 @@ function Login() {
+         return;
+       }
+ 
+-      sessionStorage.setItem('role', data.role);
+       const role = (data.role || '').toLowerCase();
+       
+-      if (role === "candidate") navigate("/candidate/dashboard");
++      if (role === "manager") navigate("/manager/dashboard");
+       else if (role === "admin") navigate("/admin/dashboard");
+       else if (role === "hr") navigate("/hr/dashboard");
+       else if (role === "employee") navigate("/employee/dashboard");
+       else setError("Unknown user role");
+-      
+-      }
++
+     } catch (err) {
+       setError("Server not reachable. Please check your connection.");
+     } finally {
+@@ -75,13 +50,6 @@ function Login() {
+     }
+   };
+ 
+-  const toggleMode = (e) => {
+-    e.preventDefault();
+-    setIsSignUp(!isSignUp);
+-    setError("");
+-    setMessage("");
+-  };
+-
+   return (
+     <div className="login-container">
+       <div className="login-glow"></div>
+@@ -96,30 +64,14 @@ function Login() {
+         <div className="login-card">
+           <div className="login-header">
+             <div className="logo-badge">HR</div>
+-            <h2>{isSignUp ? "Create an Account" : "Welcome Back"}</h2>
+-            <p>{isSignUp ? "Join the HRMS Career Portal" : "Sign in to HRMS"}</p>
++            <h2>Welcome Back</h2>
++            <p>Sign in to HRMS</p>
+           </div>
+ 
+           {error && <div className="error-banner">{error}</div>}
+           {message && <div className="success-message">{message}</div>}
+ 
+           <form onSubmit={handleSubmit} className="login-form">
+-            {isSignUp && (
+-              <div className="form-group">
+-                <label>Full Name</label>
+-                <div className="input-with-left-icon">
+-                  <User className="input-icon" size={20} />
+-                  <input
+-                    type="text"
+-                    placeholder="e.g. Bruce Wayne"
+-                    value={name}
+-                    onChange={(e) => setName(e.target.value)}
+-                    required
+-                  />
+-                </div>
+-              </div>
+-            )}
+-
+             <div className="form-group">
+               <label>Email Address</label>
+               <div className="input-with-left-icon">
+@@ -137,7 +89,7 @@ function Login() {
+             <div className="form-group">
+               <div className="password-header">
+                 <label>Password</label>
+-                {!isSignUp && <a href="#" className="forgot-link">Forgot password?</a>}
++                <a href="#" className="forgot-link">Forgot password?</a>
+               </div>
+               <div className="input-with-left-icon">
+                 <Lock className="input-icon" size={20} />
+@@ -159,17 +111,9 @@ function Login() {
+             </div>
+ 
+             <button type="submit" className="submit-btn" disabled={loading}>
+-              {loading ? <span className="loader"></span> : (isSignUp ? "Sign Up" : "Sign In")}
++              {loading ? <span className="loader"></span> : "Sign In"}
+             </button>
+           </form>
+-
+-          <div className="login-footer">
+-            {isSignUp ? (
+-              <>Already have an account? <a href="#" onClick={toggleMode}>Sign In here</a></>
+-            ) : (
+-              <>Don't have an account? <a href="#" onClick={toggleMode}>Create one now</a></>
+-            )}
+-          </div>
+         </div>
+       </div>
+     </div>
+diff --git a/frontend/src/pages/employee/EmployeeDashboard.jsx b/frontend/src/pages/employee/EmployeeDashboard.jsx
+index 9d7dbbd..bf4938f 100644
+--- a/frontend/src/pages/employee/EmployeeDashboard.jsx
++++ b/frontend/src/pages/employee/EmployeeDashboard.jsx
+@@ -34,14 +34,8 @@ function EmployeeDashboard() {
+             setLoading(false);
+         })
+         .catch((err) => {
+-            console.warn("Using Fallback Data");
+-            const fallbackData = {
+-                user: { name: "Abhishek Pandey", email: "abhishek@municipal.gov", role: "Field Officer" },
+-                employee: { employee_code: "EMP-2026-001", department: "Sanitation", position: "Supervisor", status: "Active" },
+-                stats: { aiScore: 9.2, attendanceRate: 98, leavesBalance: 8, tasksCompleted: 142, rank: "Top 5%", jioHazariStatus: "In Zone" },
+-                performanceHistory: [6.5, 7.2, 7.8, 8.5, 8.9, 9.2]
+-            };
+-            setData(fallbackData);
++            console.error("Failed to load dashboard data.", err);
++            setData({ error: true });
+             setLoading(false);
+         });
+     }
+@@ -86,6 +80,11 @@ function EmployeeDashboard() {
+             <>
+                 {loading ? (
+                     <div className="emp-loading"><div className="spinner"></div>Loading Dashboard...</div>
++                ) : data?.error ? (
++                    <div className="emp-error-state" style={{ textAlign: "center", padding: "4rem 2rem", background: "rgba(30,30,40,0.5)", borderRadius: "12px", border: "1px solid rgba(255,255,255,0.05)", marginTop: "2rem" }}>
++                        <h2 style={{ color: "#f87171", marginBottom: "1rem" }}>Could not load dashboard. Please refresh.</h2>
++                        <button onClick={() => window.location.reload()} style={{ padding: "0.75rem 1.5rem", background: "#3b82f6", color: "white", border: "none", borderRadius: "8px", cursor: "pointer", fontWeight: "600", transition: "0.2s" }}>Refresh Page</button>
++                    </div>
+                 ) : (
+                     <div className="emp-dashboard-container">
+                         
+diff --git a/frontend/src/pages/hr/Dashboard.jsx b/frontend/src/pages/hr/Dashboard.jsx
+index 9855c13..865355f 100644
+--- a/frontend/src/pages/hr/Dashboard.jsx
++++ b/frontend/src/pages/hr/Dashboard.jsx
+@@ -1,4 +1,5 @@
+ import React, { useState, useEffect } from 'react';
++import { useNavigate } from 'react-router-dom';
+ import './style.css';
+ import * as Data from './views/DashboardData';
+ import { icons } from './views/Icons';
+@@ -8,11 +9,15 @@ import EmployeesView from './views/EmployeesView';
+ import DepartmentsView from './views/DepartmentsView';
+ import AttendanceView from './views/AttendanceView';
+ import LeaveView from './views/LeaveView';
++import PayrollView from './views/PayrollView';
++import ReportsView from './views/ReportsView';
++import SettingsView from './views/SettingsView';
+ import AttendanceDetailModal from './views/AttendanceDetailModal';
+ import { getCurrentUser, getHRUser } from '../../services/auth';
+-import { approveLeaveRequest, rejectLeaveRequest } from '../../services/hr'; // NEW IMPORT
++import { approveLeaveRequest, rejectLeaveRequest } from '../../services/hr';
+ 
+ const HRDashboard = () => {
++  const navigate = useNavigate();
+   // ============================================
+   // UI STATE MANAGEMENT
+   // ============================================
+@@ -22,6 +27,8 @@ const HRDashboard = () => {
+   const [showAddEmployee, setShowAddEmployee] = useState(false);
+   const [showEmployeeDetail, setShowEmployeeDetail] = useState(false);
+   const [selectedEmployee, setSelectedEmployee] = useState(null);
++  const [newEmployeeForm, setNewEmployeeForm] = useState({ name: '', email: '', department: 'Finance', role: 'employee' });
++  const [isSubmittingNewEmployee, setIsSubmittingNewEmployee] = useState(false);
+   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+   const [searchQuery, setSearchQuery] = useState('');
+   const [isDarkMode, setIsDarkMode] = useState(false);
+@@ -109,6 +116,33 @@ const HRDashboard = () => {
+     }
+   };
+ 
++  const handleAddEmployeeSubmit = async (e) => {
++    e.preventDefault();
++    setIsSubmittingNewEmployee(true);
++    try {
++      const resp = await fetch('/api/hr/create-employee', {
++        method: 'POST',
++        headers: { 'Content-Type': 'application/json' },
++        credentials: 'include',
++        body: JSON.stringify(newEmployeeForm)
++      });
++      if (resp.ok) {
++         alert('Employee added successfully!');
++         setShowAddEmployee(false);
++         setNewEmployeeForm({ name: '', email: '', department: 'Finance', role: 'employee' });
++         // Refresh list
++         import('../../services/hr').then(module => module.getEmployees().then(resp => setEmployees(resp.employees || [])));
++      } else {
++         const data = await resp.json();
++         alert(data.error || 'Failed to add employee');
++      }
++    } catch (err) {
++      alert('Error adding employee');
++    } finally {
++      setIsSubmittingNewEmployee(false);
++    }
++  };
++
+   const handleViewEmployee = (employee) => {
+     setSelectedEmployee(employee);
+     setShowEmployeeDetail(true);
+@@ -317,15 +351,21 @@ const HRDashboard = () => {
+             />
+           )}
+ 
+-          {/* Fallback for Under Development Sections */}
+-          {['payroll', 'recruitment', 'performance', 'reports', 'settings'].includes(activeSection) && (
+-            <div className="section-content">
+-              <div className="under-development">
+-                <div className="construction-icon">🚧</div>
+-                <h2>{navItems.find(n => n.id === activeSection)?.label}</h2>
+-                <p className="section-description">
+-                  This section is currently under development. Check back soon for updates!
+-                </p>
++          {/* Payroll View */}
++          {activeSection === 'payroll' && <PayrollView />}
++
++          {/* Reports View */}
++          {activeSection === 'reports' && <ReportsView />}
++
++          {/* Settings View */}
++          {activeSection === 'settings' && <SettingsView />}
++
++          {/* Fallback for Under Development Sections (Performance, Recruitment) */}
++          {['recruitment', 'performance'].includes(activeSection) && (
++            <div className="section-content" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
++              <div style={{ textAlign: 'center', color: '#9ca3af' }}>
++                <h2 style={{ marginBottom: '10px', color: '#f9fafb' }}>{navItems.find(n => n.id === activeSection)?.label}</h2>
++                <p>This module is coming soon.</p>
+               </div>
+             </div>
+           )}
+@@ -371,7 +411,36 @@ const HRDashboard = () => {
+               </button>
+             </div>
+             <div className="modal-body">
+-              <p>Employee form will be implemented here...</p>
++              <form onSubmit={handleAddEmployeeSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
++                <div className="form-group" style={{ display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
++                  <label style={{ marginBottom: '5px', fontWeight: 'bold' }}>Full Name</label>
++                  <input type="text" value={newEmployeeForm.name} onChange={(e) => setNewEmployeeForm({...newEmployeeForm, name: e.target.value})} required style={{ padding: '10px', borderRadius: '5px', border: '1px solid #374151', background: '#111827', color: 'white' }} />
++                </div>
++                <div className="form-group" style={{ display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
++                  <label style={{ marginBottom: '5px', fontWeight: 'bold' }}>Email</label>
++                  <input type="email" value={newEmployeeForm.email} onChange={(e) => setNewEmployeeForm({...newEmployeeForm, email: e.target.value})} required style={{ padding: '10px', borderRadius: '5px', border: '1px solid #374151', background: '#111827', color: 'white' }} />
++                </div>
++                <div className="form-group" style={{ display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
++                  <label style={{ marginBottom: '5px', fontWeight: 'bold' }}>Department</label>
++                  <select value={newEmployeeForm.department} onChange={(e) => setNewEmployeeForm({...newEmployeeForm, department: e.target.value})} style={{ padding: '10px', borderRadius: '5px', border: '1px solid #374151', background: '#111827', color: 'white' }}>
++                    <option value="Finance">Finance</option>
++                    <option value="Health">Health</option>
++                    <option value="Administration">Administration</option>
++                    <option value="Public Works">Public Works</option>
++                  </select>
++                </div>
++                <div className="form-group" style={{ display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
++                  <label style={{ marginBottom: '5px', fontWeight: 'bold' }}>Role</label>
++                  <select value={newEmployeeForm.role} onChange={(e) => setNewEmployeeForm({...newEmployeeForm, role: e.target.value})} style={{ padding: '10px', borderRadius: '5px', border: '1px solid #374151', background: '#111827', color: 'white' }}>
++                    <option value="employee">Employee</option>
++                    <option value="manager">Manager</option>
++                    <option value="hr">HR</option>
++                  </select>
++                </div>
++                <button type="submit" className="primary-btn" disabled={isSubmittingNewEmployee} style={{ marginTop: '10px' }}>
++                  {isSubmittingNewEmployee ? 'Saving...' : 'Create Employee'}
++                </button>
++              </form>
+             </div>
+           </div>
+         </>
+@@ -453,7 +522,15 @@ const HRDashboard = () => {
+               <button className="secondary-btn" onClick={() => setShowLogoutConfirm(false)}>
+                 Cancel
+               </button>
+-              <button className="danger-btn" onClick={() => alert('Logged out successfully')}>
++              <button className="danger-btn" onClick={async () => {
++                try {
++                  await import('../../services/auth').then(m => m.logout());
++                  navigate('/login');
++                } catch (e) {
++                  console.error('Logout failed', e);
++                  navigate('/login');
++                }
++              }}>
+                 Logout
+               </button>
+             </div>
+diff --git a/frontend/src/pages/hr/views/DashboardData.js b/frontend/src/pages/hr/views/DashboardData.js
+index 0aca905..1cf6f2c 100644
+--- a/frontend/src/pages/hr/views/DashboardData.js
++++ b/frontend/src/pages/hr/views/DashboardData.js
+@@ -11,18 +11,7 @@ export const currentUser = {
+ 
+ // Current logged-in user
+ 
+-// --- ICONS (SVG) ---
+-// We export these as simple objects or functions to keep JSX clean
+-export const icons = {
+-  dashboard: 'dashboard', // Mapped in UI or passed as strings if using an icon library
+-  // For this refactor, we will keep SVGs in the View or a separate Icons.js 
+-  // to avoid JSX in .js files if you aren't using a transpiler that supports it easily.
+-  // However, since we are in React, we can return JSX here if permitted, 
+-  // but standard practice for "Data" files is raw data. 
+-  // *Decision*: I will keep raw data here. Icons remain in JSX for now 
+-  // to ensure your build process doesn't break, 
+-  // or we can move them to a separate component.
+-};
++
+ 
+ // --- EMPLOYEES ---
+ export const initialEmployees = [
+@@ -122,9 +111,6 @@ export const generateEmployeeCalendar = (employee) => {
+       const dayOfWeek = date.getDay();
+       let status = 'present';
+       if (dayOfWeek === 0 || dayOfWeek === 6) status = 'weekend';
+-      else if (Math.random() < employee.totalLeaves / 200) status = 'leave';
+-      else if (Math.random() < employee.lateArrivals / 150) status = 'late';
+-      else if (Math.random() < employee.earlyLeaves / 200) status = 'early-leave';
+       monthData.days.push({ day, status });
+     }
+     calendar.push(monthData);
+diff --git a/frontend/src/pages/hr/views/DashboardView.jsx b/frontend/src/pages/hr/views/DashboardView.jsx
+index be599e2..b7c6de4 100644
+--- a/frontend/src/pages/hr/views/DashboardView.jsx
++++ b/frontend/src/pages/hr/views/DashboardView.jsx
+@@ -20,7 +20,7 @@ const DashboardView = ({
+       <div className="welcome-header">
+         <div>
+           <h2>Welcome back, {(hrUser?.name || currentUser?.name || Data.currentUser.name).split(' ')[0]} ✨</h2>
+-          <p>Here's your HR overview for Sunday, January 11, 2026</p>
++          <p>Here's your HR overview for {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+         </div>
+       </div>
+ 

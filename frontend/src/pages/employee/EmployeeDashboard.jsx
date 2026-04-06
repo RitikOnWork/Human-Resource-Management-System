@@ -40,8 +40,13 @@ function EmployeeDashboard() {
             setLoading(false);
         })
         .catch((err) => {
+<<<<<<< HEAD
+            console.error("Failed to load dashboard data.", err);
+            setData({ error: true });
+=======
             console.error("Dashboard load error:", err);
             setError(err.message);
+>>>>>>> 376d7df58767ed276fda46bd82d1aa5ba19cb3a8
             setLoading(false);
         });
     }
@@ -93,10 +98,17 @@ function EmployeeDashboard() {
             <>
                 {loading ? (
                     <div className="emp-loading"><div className="spinner"></div>Loading Dashboard...</div>
+<<<<<<< HEAD
+                ) : data?.error ? (
+                    <div className="emp-error-state" style={{ textAlign: "center", padding: "4rem 2rem", background: "rgba(30,30,40,0.5)", borderRadius: "12px", border: "1px solid rgba(255,255,255,0.05)", marginTop: "2rem" }}>
+                        <h2 style={{ color: "#f87171", marginBottom: "1rem" }}>Could not load dashboard. Please refresh.</h2>
+                        <button onClick={() => window.location.reload()} style={{ padding: "0.75rem 1.5rem", background: "#3b82f6", color: "white", border: "none", borderRadius: "8px", cursor: "pointer", fontWeight: "600", transition: "0.2s" }}>Refresh Page</button>
+=======
                 ) : error ? (
                     <div className="emp-loading">
                       <p style={{ color: '#ef4444' }}>Failed to load dashboard: {error}</p>
                       <button onClick={() => setActiveTab('dashboard')} style={{ marginTop: '12px', padding: '8px 20px', background: '#6366f1', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer' }}>Retry</button>
+>>>>>>> 376d7df58767ed276fda46bd82d1aa5ba19cb3a8
                     </div>
                 ) : (
                     <div className="emp-dashboard-container">

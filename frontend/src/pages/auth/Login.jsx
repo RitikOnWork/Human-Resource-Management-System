@@ -1,13 +1,11 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { Mail, Lock, User, ArrowLeft, Eye, EyeOff } from "lucide-react";
+import { Mail, Lock, ArrowLeft, Eye, EyeOff } from "lucide-react";
 import "./login.css";
 
 function Login() {
   const navigate = useNavigate();
 
-  const [isSignUp, setIsSignUp] = useState(false);
-  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -22,6 +20,14 @@ function Login() {
     setLoading(true);
 
     try {
+<<<<<<< HEAD
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+=======
       if (isSignUp) {
         // --- SIGNUP FLOW ---
         const response = await fetch("/api/auth/signup", {
@@ -50,6 +56,7 @@ function Login() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email, password }),
         });
+>>>>>>> 376d7df58767ed276fda46bd82d1aa5ba19cb3a8
 
       const data = await response.json();
 
@@ -59,28 +66,19 @@ function Login() {
         return;
       }
 
-      sessionStorage.setItem('role', data.role);
       const role = (data.role || '').toLowerCase();
       
-      if (role === "candidate") navigate("/candidate/dashboard");
+      if (role === "manager") navigate("/manager/dashboard");
       else if (role === "admin") navigate("/admin/dashboard");
       else if (role === "hr") navigate("/hr/dashboard");
       else if (role === "employee") navigate("/employee/dashboard");
       else setError("Unknown user role");
-      
-      }
+
     } catch (err) {
       setError("Server not reachable. Please check your connection.");
     } finally {
       setLoading(false);
     }
-  };
-
-  const toggleMode = (e) => {
-    e.preventDefault();
-    setIsSignUp(!isSignUp);
-    setError("");
-    setMessage("");
   };
 
   return (
@@ -97,30 +95,14 @@ function Login() {
         <div className="login-card">
           <div className="login-header">
             <div className="logo-badge">HR</div>
-            <h2>{isSignUp ? "Create an Account" : "Welcome Back"}</h2>
-            <p>{isSignUp ? "Join the HRMS Career Portal" : "Sign in to HRMS"}</p>
+            <h2>Welcome Back</h2>
+            <p>Sign in to HRMS</p>
           </div>
 
           {error && <div className="error-banner">{error}</div>}
           {message && <div className="success-message">{message}</div>}
 
           <form onSubmit={handleSubmit} className="login-form">
-            {isSignUp && (
-              <div className="form-group">
-                <label>Full Name</label>
-                <div className="input-with-left-icon">
-                  <User className="input-icon" size={20} />
-                  <input
-                    type="text"
-                    placeholder="e.g. Bruce Wayne"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    required
-                  />
-                </div>
-              </div>
-            )}
-
             <div className="form-group">
               <label>Email Address</label>
               <div className="input-with-left-icon">
@@ -138,7 +120,7 @@ function Login() {
             <div className="form-group">
               <div className="password-header">
                 <label>Password</label>
-                {!isSignUp && <a href="#" className="forgot-link">Forgot password?</a>}
+                <a href="#" className="forgot-link">Forgot password?</a>
               </div>
               <div className="input-with-left-icon">
                 <Lock className="input-icon" size={20} />
@@ -160,17 +142,9 @@ function Login() {
             </div>
 
             <button type="submit" className="submit-btn" disabled={loading}>
-              {loading ? <span className="loader"></span> : (isSignUp ? "Sign Up" : "Sign In")}
+              {loading ? <span className="loader"></span> : "Sign In"}
             </button>
           </form>
-
-          <div className="login-footer">
-            {isSignUp ? (
-              <>Already have an account? <a href="#" onClick={toggleMode}>Sign In here</a></>
-            ) : (
-              <>Don't have an account? <a href="#" onClick={toggleMode}>Create one now</a></>
-            )}
-          </div>
         </div>
       </div>
     </div>

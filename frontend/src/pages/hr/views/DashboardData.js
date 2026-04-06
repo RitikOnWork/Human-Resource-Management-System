@@ -11,18 +11,7 @@ export const currentUser = {
 
 // Current logged-in user
 
-// --- ICONS (SVG) ---
-// We export these as simple objects or functions to keep JSX clean
-export const icons = {
-  dashboard: 'dashboard', // Mapped in UI or passed as strings if using an icon library
-  // For this refactor, we will keep SVGs in the View or a separate Icons.js 
-  // to avoid JSX in .js files if you aren't using a transpiler that supports it easily.
-  // However, since we are in React, we can return JSX here if permitted, 
-  // but standard practice for "Data" files is raw data. 
-  // *Decision*: I will keep raw data here. Icons remain in JSX for now 
-  // to ensure your build process doesn't break, 
-  // or we can move them to a separate component.
-};
+
 
 // --- EMPLOYEES ---
 export const initialEmployees = [
@@ -122,9 +111,6 @@ export const generateEmployeeCalendar = (employee) => {
       const dayOfWeek = date.getDay();
       let status = 'present';
       if (dayOfWeek === 0 || dayOfWeek === 6) status = 'weekend';
-      else if (Math.random() < employee.totalLeaves / 200) status = 'leave';
-      else if (Math.random() < employee.lateArrivals / 150) status = 'late';
-      else if (Math.random() < employee.earlyLeaves / 200) status = 'early-leave';
       monthData.days.push({ day, status });
     }
     calendar.push(monthData);

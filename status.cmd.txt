@@ -1,0 +1,28 @@
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   frontend/src/App.jsx
+	modified:   frontend/src/components/ProtectedRoute.jsx
+	modified:   frontend/src/pages/admin/Dashboard.jsx
+	modified:   frontend/src/pages/auth/Login.jsx
+	modified:   frontend/src/pages/employee/EmployeeDashboard.jsx
+	modified:   frontend/src/pages/hr/Dashboard.jsx
+	modified:   frontend/src/pages/hr/views/DashboardData.js
+	modified:   frontend/src/pages/hr/views/DashboardView.jsx
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	diff.patch
+	frontend/src/pages/hr/views/PayrollView.css
+	frontend/src/pages/hr/views/PayrollView.jsx
+	frontend/src/pages/hr/views/ReportsView.css
+	frontend/src/pages/hr/views/ReportsView.jsx
+	frontend/src/pages/hr/views/SettingsView.css
+	frontend/src/pages/hr/views/SettingsView.jsx
+	frontend/src/pages/manager/
+	status.cmd.txt
+
+no changes added to commit (use "git add" and/or "git commit -a")

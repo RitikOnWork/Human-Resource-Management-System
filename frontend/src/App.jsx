@@ -29,10 +29,8 @@ const AdminEmployees = lazy(() => import("./pages/admin/AdminEmployees"));
 const AdminCreateJob = lazy(() => import("./pages/admin/CreateJob"));
 const AdminApplications = lazy(() => import("./pages/admin/Applications"));
 
-// Candidate Dashboards
-const CandidateDashboard = lazy(() => import("./pages/candidate/Dashboard"));
-const CandidateJobs = lazy(() => import("./pages/candidate/Jobs"));
-const CandidateApplications = lazy(() => import("./pages/candidate/Applications"));
+// Manager Dashboards
+const ManagerDashboard = lazy(() => import("./pages/manager/ManagerDashboard"));
 
 // Employee Dashboards
 const EmployeeDashboard = lazy(() => import("./pages/employee/EmployeeDashboard"));
@@ -67,16 +65,20 @@ function App() {
         <Route
           path="/hr/dashboard"
           element={
+<<<<<<< HEAD
+            <ProtectedRoute roles={['admin', 'hr']}>
+=======
             <ProtectedRoute role="hr">
+>>>>>>> 376d7df58767ed276fda46bd82d1aa5ba19cb3a8
               <HRDashboard />
             </ProtectedRoute>
           }
         />
 
         <Route
-          path="/hr/create-employee"
+          path="/admin/create-employee"
           element={
-            <ProtectedRoute role="admin">
+            <ProtectedRoute roles={['admin']}>
               <CreateEmployee />
             </ProtectedRoute>
           }
@@ -85,7 +87,7 @@ function App() {
         <Route
           path="/admin/dashboard"
           element={
-            <ProtectedRoute role="admin">
+            <ProtectedRoute roles={['admin']}>
               <AdminDashboard />
             </ProtectedRoute>
           }
@@ -94,7 +96,7 @@ function App() {
         <Route
           path="/admin/employees"
           element={
-            <ProtectedRoute role="admin">
+            <ProtectedRoute roles={['admin']}>
               <AdminEmployees />
             </ProtectedRoute>
           }
@@ -104,12 +106,15 @@ function App() {
         <Route
           path="/admin/create-job"
           element={
-            <ProtectedRoute role="admin">
+            <ProtectedRoute roles={['admin']}>
               <AdminCreateJob />
             </ProtectedRoute>
           }
         />
 
+<<<<<<< HEAD
+        {/* --- SECURE MANAGER ROUTES --- */}
+=======
         <Route
           path="/admin/job/:jobId/applications"
           element={
@@ -120,27 +125,12 @@ function App() {
         />
 
         {/* --- SECURE CANDIDATE ROUTES --- */}
+>>>>>>> 376d7df58767ed276fda46bd82d1aa5ba19cb3a8
         <Route
-          path="/candidate/dashboard"
+          path="/manager/dashboard"
           element={
-            <ProtectedRoute role="candidate">
-              <CandidateDashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/candidate/jobs"
-          element={
-            <ProtectedRoute role="candidate">
-              <CandidateJobs />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/candidate/applications"
-          element={
-            <ProtectedRoute role="candidate">
-              <CandidateApplications />
+            <ProtectedRoute roles={['admin', 'hr', 'manager']}>
+              <ManagerDashboard />
             </ProtectedRoute>
           }
         />
@@ -149,7 +139,7 @@ function App() {
         <Route
           path="/employee/dashboard"
           element={
-            <ProtectedRoute role="employee">
+            <ProtectedRoute roles={['employee']}>
               <EmployeeDashboard />
             </ProtectedRoute>
           }

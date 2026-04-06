@@ -1,0 +1,45 @@
+.settings-header {
+  margin-bottom: 20px;
+}
+.settings-card {
+  background: #111827;
+  padding: 24px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  max-width: 600px;
+}
+.settings-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.settings-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.settings-form-row {
+  display: flex;
+  gap: 20px;
+}
+.settings-form-col {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+.settings-label {
+  color: #d1d5db;
+  font-weight: bold;
+}
+.settings-input {
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #374151;
+  background: #1f2937;
+  color: white;
+}
+.settings-submit-btn {
+  margin-top: 10px;
+  align-self: flex-start;
+}
