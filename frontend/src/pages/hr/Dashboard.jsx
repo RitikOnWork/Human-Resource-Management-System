@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './style.css';
 import * as Data from './views/DashboardData';
 import { icons } from './views/Icons';
@@ -8,11 +9,15 @@ import EmployeesView from './views/EmployeesView';
 import DepartmentsView from './views/DepartmentsView';
 import AttendanceView from './views/AttendanceView';
 import LeaveView from './views/LeaveView';
+import PayrollView from './views/PayrollView';
+import ReportsView from './views/ReportsView';
+import SettingsView from './views/SettingsView';
 import AttendanceDetailModal from './views/AttendanceDetailModal';
 import { getCurrentUser, getHRUser } from '../../services/auth';
-import { approveLeaveRequest, rejectLeaveRequest } from '../../services/hr'; // NEW IMPORT
+import { approveLeaveRequest, rejectLeaveRequest } from '../../services/hr';
 
 const HRDashboard = () => {
+  const navigate = useNavigate();
   // ============================================
   // UI STATE MANAGEMENT
   // ============================================
@@ -22,6 +27,8 @@ const HRDashboard = () => {
   const [showAddEmployee, setShowAddEmployee] = useState(false);
   const [showEmployeeDetail, setShowEmployeeDetail] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const [newEmployeeForm, setNewEmployeeForm] = useState({ name: '', email: '', department: 'Finance', role: 'employee' });
+  const [isSubmittingNewEmployee, setIsSubmittingNewEmployee] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -106,6 +113,33 @@ const HRDashboard = () => {
       // optionally refetch leave requests or revert optimistic UI
     } finally {
       setProcessingLeaveId(null);
+    }
+  };
+
+  const handleAddEmployeeSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmittingNewEmployee(true);
+    try {
+      const resp = await fetch('/api/hr/create-employee', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(newEmployeeForm)
+      });
+      if (resp.ok) {
+         alert('Employee added successfully!');
+         setShowAddEmployee(false);
+         setNewEmployeeForm({ name: '', email: '', department: 'Finance', role: 'employee' });
+         // Refresh list
+         import('../../services/hr').then(module => module.getEmployees().then(resp => setEmployees(resp.employees || [])));
+      } else {
+         const data = await resp.json();
+         alert(data.error || 'Failed to add employee');
+      }
+    } catch (err) {
+      alert('Error adding employee');
+    } finally {
+      setIsSubmittingNewEmployee(false);
     }
   };
 
@@ -317,15 +351,21 @@ const HRDashboard = () => {
             />
           )}
 
-          {/* Fallback for Under Development Sections */}
-          {['payroll', 'recruitment', 'performance', 'reports', 'settings'].includes(activeSection) && (
-            <div className="section-content">
-              <div className="under-development">
-                <div className="construction-icon">🚧</div>
-                <h2>{navItems.find(n => n.id === activeSection)?.label}</h2>
-                <p className="section-description">
-                  This section is currently under development. Check back soon for updates!
-                </p>
+          {/* Payroll View */}
+          {activeSection === 'payroll' && <PayrollView />}
+
+          {/* Reports View */}
+          {activeSection === 'reports' && <ReportsView />}
+
+          {/* Settings View */}
+          {activeSection === 'settings' && <SettingsView />}
+
+          {/* Fallback for Under Development Sections (Performance, Recruitment) */}
+          {['recruitment', 'performance'].includes(activeSection) && (
+            <div className="section-content" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
+              <div style={{ textAlign: 'center', color: '#9ca3af' }}>
+                <h2 style={{ marginBottom: '10px', color: '#f9fafb' }}>{navItems.find(n => n.id === activeSection)?.label}</h2>
+                <p>This module is coming soon.</p>
               </div>
             </div>
           )}
@@ -371,7 +411,36 @@ const HRDashboard = () => {
               </button>
             </div>
             <div className="modal-body">
-              <p>Employee form will be implemented here...</p>
+              <form onSubmit={handleAddEmployeeSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                <div className="form-group" style={{ display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
+                  <label style={{ marginBottom: '5px', fontWeight: 'bold' }}>Full Name</label>
+                  <input type="text" value={newEmployeeForm.name} onChange={(e) => setNewEmployeeForm({...newEmployeeForm, name: e.target.value})} required style={{ padding: '10px', borderRadius: '5px', border: '1px solid #374151', background: '#111827', color: 'white' }} />
+                </div>
+                <div className="form-group" style={{ display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
+                  <label style={{ marginBottom: '5px', fontWeight: 'bold' }}>Email</label>
+                  <input type="email" value={newEmployeeForm.email} onChange={(e) => setNewEmployeeForm({...newEmployeeForm, email: e.target.value})} required style={{ padding: '10px', borderRadius: '5px', border: '1px solid #374151', background: '#111827', color: 'white' }} />
+                </div>
+                <div className="form-group" style={{ display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
+                  <label style={{ marginBottom: '5px', fontWeight: 'bold' }}>Department</label>
+                  <select value={newEmployeeForm.department} onChange={(e) => setNewEmployeeForm({...newEmployeeForm, department: e.target.value})} style={{ padding: '10px', borderRadius: '5px', border: '1px solid #374151', background: '#111827', color: 'white' }}>
+                    <option value="Finance">Finance</option>
+                    <option value="Health">Health</option>
+                    <option value="Administration">Administration</option>
+                    <option value="Public Works">Public Works</option>
+                  </select>
+                </div>
+                <div className="form-group" style={{ display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
+                  <label style={{ marginBottom: '5px', fontWeight: 'bold' }}>Role</label>
+                  <select value={newEmployeeForm.role} onChange={(e) => setNewEmployeeForm({...newEmployeeForm, role: e.target.value})} style={{ padding: '10px', borderRadius: '5px', border: '1px solid #374151', background: '#111827', color: 'white' }}>
+                    <option value="employee">Employee</option>
+                    <option value="manager">Manager</option>
+                    <option value="hr">HR</option>
+                  </select>
+                </div>
+                <button type="submit" className="primary-btn" disabled={isSubmittingNewEmployee} style={{ marginTop: '10px' }}>
+                  {isSubmittingNewEmployee ? 'Saving...' : 'Create Employee'}
+                </button>
+              </form>
             </div>
           </div>
         </>
@@ -453,7 +522,15 @@ const HRDashboard = () => {
               <button className="secondary-btn" onClick={() => setShowLogoutConfirm(false)}>
                 Cancel
               </button>
-              <button className="danger-btn" onClick={() => alert('Logged out successfully')}>
+              <button className="danger-btn" onClick={async () => {
+                try {
+                  await import('../../services/auth').then(m => m.logout());
+                  navigate('/login');
+                } catch (e) {
+                  console.error('Logout failed', e);
+                  navigate('/login');
+                }
+              }}>
                 Logout
               </button>
             </div>

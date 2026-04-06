@@ -1,0 +1,28 @@
+.payroll-view {
+  width: 100%;
+}
+.payroll-header {
+  margin-bottom: 20px;
+}
+.payroll-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+.payroll-table th {
+  padding: 12px;
+  border-bottom: 1px solid #374151;
+  color: #9ca3af;
+}
+.payroll-table tr {
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.payroll-table td {
+  padding: 12px;
+  color: #e5e7eb;
+}
+.payroll-empty {
+  padding: 12px;
+  text-align: center;
+  color: #9ca3af;
+}

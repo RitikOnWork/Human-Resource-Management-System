@@ -45,11 +45,9 @@ function AdminDashboard() {
             <p style={{ color: '#d1d5db', marginBottom: '20px' }}><strong>Vacancies:</strong> {job.vacancies}</p>
             
             <div style={{ marginTop: '15px' }}>
-              <Link to={`/admin/job/${job.id}/applications`}>
-                <button style={{ background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)', color: 'white', padding: '10px 16px', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', width: '100%' }}>
-                  View Applications
+                <button onClick={() => alert("Applications view is under construction.")} style={{ background: 'linear-gradient(135deg, #4b5563 0%, #374151 100%)', color: '#9ca3af', padding: '10px 16px', border: 'none', borderRadius: '6px', cursor: 'not-allowed', fontWeight: 'bold', width: '100%' }}>
+                  View Applications (Coming Soon)
                 </button>
-              </Link>
             </div>
           </div>
         ))}

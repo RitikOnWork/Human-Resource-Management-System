@@ -1,7 +1,7 @@
 import { Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
-function ProtectedRoute({ children, role }) {
+function ProtectedRoute({ children, roles }) {
   const [loading, setLoading] = useState(true);
   const [authorized, setAuthorized] = useState(false);
 
@@ -16,8 +16,12 @@ function ProtectedRoute({ children, role }) {
         return res.json();
       })
       .then((data) => {
-        if (data && data.user && (data.user.role || '').toLowerCase() === (role || '').toLowerCase()) {
-          setAuthorized(true);
+        if (data && data.user && data.user.role) {
+          const userRole = data.user.role.toLowerCase();
+          const allowedRoles = roles.map(r => r.toLowerCase());
+          if (allowedRoles.includes(userRole)) {
+            setAuthorized(true);
+          }
         }
         setLoading(false);
       })
@@ -25,7 +29,7 @@ function ProtectedRoute({ children, role }) {
         setAuthorized(false);
         setLoading(false);
       });
-  }, [role]);
+  }, [roles]);
 
   if (loading) {
     return <div>Loading...</div>;

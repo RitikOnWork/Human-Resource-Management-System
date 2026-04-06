@@ -34,14 +34,8 @@ function EmployeeDashboard() {
             setLoading(false);
         })
         .catch((err) => {
-            console.warn("Using Fallback Data");
-            const fallbackData = {
-                user: { name: "Abhishek Pandey", email: "abhishek@municipal.gov", role: "Field Officer" },
-                employee: { employee_code: "EMP-2026-001", department: "Sanitation", position: "Supervisor", status: "Active" },
-                stats: { aiScore: 9.2, attendanceRate: 98, leavesBalance: 8, tasksCompleted: 142, rank: "Top 5%", jioHazariStatus: "In Zone" },
-                performanceHistory: [6.5, 7.2, 7.8, 8.5, 8.9, 9.2]
-            };
-            setData(fallbackData);
+            console.error("Failed to load dashboard data.", err);
+            setData({ error: true });
             setLoading(false);
         });
     }
@@ -86,6 +80,11 @@ function EmployeeDashboard() {
             <>
                 {loading ? (
                     <div className="emp-loading"><div className="spinner"></div>Loading Dashboard...</div>
+                ) : data?.error ? (
+                    <div className="emp-error-state" style={{ textAlign: "center", padding: "4rem 2rem", background: "rgba(30,30,40,0.5)", borderRadius: "12px", border: "1px solid rgba(255,255,255,0.05)", marginTop: "2rem" }}>
+                        <h2 style={{ color: "#f87171", marginBottom: "1rem" }}>Could not load dashboard. Please refresh.</h2>
+                        <button onClick={() => window.location.reload()} style={{ padding: "0.75rem 1.5rem", background: "#3b82f6", color: "white", border: "none", borderRadius: "8px", cursor: "pointer", fontWeight: "600", transition: "0.2s" }}>Refresh Page</button>
+                    </div>
                 ) : (
                     <div className="emp-dashboard-container">
                         
