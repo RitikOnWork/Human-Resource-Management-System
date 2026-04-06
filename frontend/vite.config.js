@@ -7,9 +7,9 @@ export default defineConfig({
     proxy: {
       "/api": {
         // Point this to your live Render backend!
-        target: "https://hrms-backend-awpf.onrender.com",
+        target: "http://localhost:5000",
         changeOrigin: true,
-        secure: true, // Set to true because Render uses https
+        secure: false,
       },
     },
   },

@@ -16,6 +16,9 @@ const Solutions = lazy(() => import("./pages/Solutions"));
 const BookDemo = lazy(() => import("./pages/BookDemo"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
+// Auth Pages
+const Signup = lazy(() => import("./pages/auth/Signup"));
+
 // HR Dashboards
 const HRDashboard = lazy(() => import("./pages/hr/Dashboard"));
 
@@ -24,6 +27,7 @@ const AdminDashboard = lazy(() => import("./pages/admin/Dashboard"));
 const CreateEmployee = lazy(() => import("./pages/admin/CreateEmployee"));
 const AdminEmployees = lazy(() => import("./pages/admin/AdminEmployees"));
 const AdminCreateJob = lazy(() => import("./pages/admin/CreateJob"));
+const AdminApplications = lazy(() => import("./pages/admin/Applications"));
 
 // Manager Dashboards
 const ManagerDashboard = lazy(() => import("./pages/manager/ManagerDashboard"));
@@ -54,19 +58,23 @@ function App() {
 
         {/* --- STANDALONE / AUTH PAGES --- */}
         <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
         <Route path="/demo" element={<BookDemo />} />
 
         {/* --- SECURE ADMIN / HR ROUTES --- */}
         <Route
           path="/hr/dashboard"
           element={
+<<<<<<< HEAD
             <ProtectedRoute roles={['admin', 'hr']}>
+=======
+            <ProtectedRoute role="hr">
+>>>>>>> 376d7df58767ed276fda46bd82d1aa5ba19cb3a8
               <HRDashboard />
             </ProtectedRoute>
           }
         />
-        
-        {/* Fixed Security: Made Admin specific, removed duplicates */}
+
         <Route
           path="/admin/create-employee"
           element={
@@ -104,7 +112,20 @@ function App() {
           }
         />
 
+<<<<<<< HEAD
         {/* --- SECURE MANAGER ROUTES --- */}
+=======
+        <Route
+          path="/admin/job/:jobId/applications"
+          element={
+            <ProtectedRoute role="admin">
+              <AdminApplications />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* --- SECURE CANDIDATE ROUTES --- */}
+>>>>>>> 376d7df58767ed276fda46bd82d1aa5ba19cb3a8
         <Route
           path="/manager/dashboard"
           element={

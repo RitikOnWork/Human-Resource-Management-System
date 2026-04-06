@@ -1,0 +1,38 @@
+{
+  "name": "human-resource-management-system",
+  "version": "1.0.0",
+  "description": "A premium, full-stack Human Resource Management SaaS platform designed to manage the modern enterprise workforce securely and efficiently. Built with a stunning, performance-driven dark aesthetic.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RitikOnWork/Human-Resource-Management-System.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/RitikOnWork/Human-Resource-Management-System/issues"
+  },
+  "homepage": "https://github.com/RitikOnWork/Human-Resource-Management-System#readme",
+  "devDependencies": {
+    "eslint": "^10.1.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
+    "prettier": "^3.8.1"
+  },
+  "lint-staged": {
+    "frontend/src/**/*.{js,jsx}": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "backend/**/*.js": [
+      "prettier --write",
+      "eslint --fix"
+    ]
+  }
+}

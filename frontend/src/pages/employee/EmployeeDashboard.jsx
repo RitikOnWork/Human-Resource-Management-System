@@ -1,41 +1,52 @@
 import React, { useEffect, useState } from "react";
-import EmployeeSidebar from "./EmployeeSidebar"; 
-import ApplyLeave from "./ApplyLeave"; // ✅ IMPORT ADDED
+import { useNavigate } from "react-router-dom";
+import EmployeeSidebar from "./EmployeeSidebar";
+import ApplyLeave from "./ApplyLeave";
 import "./EmployeeDashboard.css";
 
 function EmployeeDashboard() {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [data, setData] = useState(null);
   const [currentTime, setCurrentTime] = useState(new Date());
 
   // --- 1. Fetch Data Logic ---
   useEffect(() => {
     if (activeTab === 'dashboard') {
+        setLoading(true);
+        setError(null);
         fetch("/api/employee/dashboard", { credentials: "include" })
         .then((res) => {
-            if (!res.ok) throw new Error("Unauthorized");
+            if (!res.ok) throw new Error("Failed to load dashboard");
             return res.json();
         })
         .then((d) => {
             const enrichedData = {
                 ...d,
                 stats: {
+                    ...d.stats,
                     aiScore: 9.2,
-                    attendanceRate: 96,
-                    leavesBalance: 12,
+                    attendanceRate: d.stats?.attendanceDaysThisMonth ? Math.min(Math.round((d.stats.attendanceDaysThisMonth / 22) * 100), 100) : 0,
+                    leavesBalance: (d.stats?.totalLeaves || 0) - (d.stats?.approvedLeaves || 0),
                     tasksCompleted: 45,
                     rank: "Top 5%",
                     jioHazariStatus: "In Zone"
                 },
-                performanceHistory: [6.5, 7.0, 7.8, 8.2, 8.9, 9.2]
+                performanceHistory: d.performanceHistory || [6.5, 7.0, 7.8, 8.2, 8.9, 9.2]
             };
             setData(enrichedData);
             setLoading(false);
         })
         .catch((err) => {
+<<<<<<< HEAD
             console.error("Failed to load dashboard data.", err);
             setData({ error: true });
+=======
+            console.error("Dashboard load error:", err);
+            setError(err.message);
+>>>>>>> 376d7df58767ed276fda46bd82d1aa5ba19cb3a8
             setLoading(false);
         });
     }
@@ -59,8 +70,15 @@ function EmployeeDashboard() {
     return history.map((val, i) => `${(i / 5) * 100},${100 - (val / 10) * 100}`).join(" ");
   };
 
-  const handleLogout = () => {
-      alert("Logging out...");
+  const handleLogout = async () => {
+      try {
+        await fetch("/api/auth/logout", { method: "POST", credentials: "include" });
+        sessionStorage.removeItem("role");
+        navigate("/login");
+      } catch (err) {
+        console.error("Logout failed:", err);
+        navigate("/login");
+      }
   };
 
   return (
@@ -80,10 +98,17 @@ function EmployeeDashboard() {
             <>
                 {loading ? (
                     <div className="emp-loading"><div className="spinner"></div>Loading Dashboard...</div>
+<<<<<<< HEAD
                 ) : data?.error ? (
                     <div className="emp-error-state" style={{ textAlign: "center", padding: "4rem 2rem", background: "rgba(30,30,40,0.5)", borderRadius: "12px", border: "1px solid rgba(255,255,255,0.05)", marginTop: "2rem" }}>
                         <h2 style={{ color: "#f87171", marginBottom: "1rem" }}>Could not load dashboard. Please refresh.</h2>
                         <button onClick={() => window.location.reload()} style={{ padding: "0.75rem 1.5rem", background: "#3b82f6", color: "white", border: "none", borderRadius: "8px", cursor: "pointer", fontWeight: "600", transition: "0.2s" }}>Refresh Page</button>
+=======
+                ) : error ? (
+                    <div className="emp-loading">
+                      <p style={{ color: '#ef4444' }}>Failed to load dashboard: {error}</p>
+                      <button onClick={() => setActiveTab('dashboard')} style={{ marginTop: '12px', padding: '8px 20px', background: '#6366f1', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer' }}>Retry</button>
+>>>>>>> 376d7df58767ed276fda46bd82d1aa5ba19cb3a8
                     </div>
                 ) : (
                     <div className="emp-dashboard-container">

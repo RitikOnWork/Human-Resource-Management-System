@@ -13,8 +13,14 @@ import PayrollView from './views/PayrollView';
 import ReportsView from './views/ReportsView';
 import SettingsView from './views/SettingsView';
 import AttendanceDetailModal from './views/AttendanceDetailModal';
+<<<<<<< HEAD
 import { getCurrentUser, getHRUser } from '../../services/auth';
 import { approveLeaveRequest, rejectLeaveRequest } from '../../services/hr';
+=======
+import { useNavigate } from 'react-router-dom';
+import { getCurrentUser, getHRUser, logout } from '../../services/auth';
+import { getEmployees, getDepartments, getAttendance, getLeaveRequests, getStats, approveLeaveRequest, rejectLeaveRequest } from '../../services/hr';
+>>>>>>> 376d7df58767ed276fda46bd82d1aa5ba19cb3a8
 
 const HRDashboard = () => {
   const navigate = useNavigate();
@@ -71,13 +77,77 @@ const HRDashboard = () => {
       });
 
     // Fetch dynamic HR data
-    import('../../services/hr').then(module => {
-      module.getEmployees().then(resp => setEmployees(resp.employees || [])).catch(console.error);
-      module.getLeaveRequests().then(resp => setLeaveRequests(resp.leaveRequests || [])).catch(console.error);
-      module.getDepartments().then(resp => setDepartments(resp.departments || [])).catch(console.error);
-      module.getAttendance().then(resp => setAttendance(resp.attendance || [])).catch(console.error);
-      module.getStats().then(resp => setStats(resp)).catch(console.error);
-    }).catch(err => console.error('Failed to load HR services', err));
+    {
+      const module = { getEmployees, getDepartments, getAttendance, getLeaveRequests, getStats };
+      module.getEmployees().then(resp => {
+        const mapped = (resp.employees || []).map(emp => ({
+          id: emp.employee_code || emp._id,
+          _id: emp._id,
+          name: emp.user?.name || 'Unknown',
+          email: emp.user?.email || '',
+          department: emp.department,
+          status: emp.status === 'active' ? 'Active' : 'Inactive',
+          position: emp.designation,
+          phone: '',
+          joinedDate: emp.date_of_joining ? new Date(emp.date_of_joining).toLocaleDateString() : ''
+        }));
+        setEmployees(mapped);
+      }).catch(console.error);
+
+      module.getLeaveRequests().then(resp => {
+        const mapped = (resp.leaveRequests || []).map(req => {
+          const start = new Date(req.start_date);
+          const end = new Date(req.end_date);
+          const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
+          return {
+            id: req._id,
+            employeeName: req.user?.name || 'Unknown',
+            leaveType: req.leave_type?.replace(/^\w/, c => c.toUpperCase()) + ' Leave',
+            startDate: start.toLocaleDateString(),
+            endDate: end.toLocaleDateString(),
+            days,
+            status: req.status,
+            historicalLeaves: 0
+          };
+        });
+        setLeaveRequests(mapped);
+      }).catch(console.error);
+
+      module.getDepartments().then(resp => {
+        const colors = ['#2563eb', '#059669', '#d97706', '#dc2626', '#7c3aed', '#0891b2', '#ea580c', '#4f46e5'];
+        const mapped = (resp.departments || []).map((dept, i) => ({
+          name: dept.name,
+          employees: 0,
+          color: colors[i % colors.length]
+        }));
+        setDepartments(mapped);
+      }).catch(console.error);
+
+      module.getAttendance().then(resp => {
+        const mapped = (resp.attendance || []).map(att => ({
+          id: att.employee?.employee_code || att._id,
+          name: att.employee?.user?.name || 'Unknown',
+          department: att.employee?.department || '',
+          shift: 'Morning',
+          status: att.status,
+          checkIn: att.check_in ? new Date(att.check_in).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '-',
+          totalLeaves: 0,
+          lateArrivals: 0,
+          earlyLeaves: 0
+        }));
+        setAttendance(mapped);
+      }).catch(console.error);
+
+      module.getStats().then(resp => {
+        const s = resp.stats || {};
+        setStats({
+          totalEmployees: s.totalEmployees || 0,
+          presentToday: s.presentToday || 0,
+          onLeave: s.pendingLeaves || 0,
+          departments: s.totalDepartments || 0
+        });
+      }).catch(console.error);
+    }
 
   }, []);
 
@@ -103,9 +173,9 @@ const HRDashboard = () => {
       } else {
         await rejectLeaveRequest(id);
       }
-      // update local UI after successful backend update (use capitalized status for display)
+      // update local UI after successful backend update
       setLeaveRequests(prev =>
-        prev.map(req => (req.id === id ? { ...req, status: normalized === 'approved' ? 'Approved' : 'Rejected' } : req))
+        prev.map(req => (req.id === id ? { ...req, status: normalized === 'approved' ? 'approved' : 'rejected' } : req))
       );
     } catch (err) {
       console.error('Failed to update leave request', err);
@@ -161,11 +231,12 @@ const HRDashboard = () => {
   // ============================================
   // FILTERED DATA
   // ============================================
-  const filteredEmployees = employees.filter(emp =>
-    emp.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    emp.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    emp.department.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredEmployees = employees.filter(emp => {
+    const query = searchQuery.toLowerCase();
+    return (emp.name || '').toLowerCase().includes(query) ||
+      (emp.id || '').toLowerCase().includes(query) ||
+      (emp.department || '').toLowerCase().includes(query);
+  });
 
   // ============================================
   // NAVIGATION ITEMS
@@ -522,6 +593,7 @@ const HRDashboard = () => {
               <button className="secondary-btn" onClick={() => setShowLogoutConfirm(false)}>
                 Cancel
               </button>
+<<<<<<< HEAD
               <button className="danger-btn" onClick={async () => {
                 try {
                   await import('../../services/auth').then(m => m.logout());
@@ -531,6 +603,9 @@ const HRDashboard = () => {
                   navigate('/login');
                 }
               }}>
+=======
+              <button className="danger-btn" onClick={async () => { try { await logout(); } catch(e) {} sessionStorage.removeItem('role'); navigate('/login'); }}>
+>>>>>>> 376d7df58767ed276fda46bd82d1aa5ba19cb3a8
                 Logout
               </button>
             </div>

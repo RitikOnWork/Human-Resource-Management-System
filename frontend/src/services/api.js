@@ -1,9 +1,8 @@
-// 1. ADD YOUR RENDER URL HERE (No slash at the very end)
-const BASE_URL = "https://hrms-backend-awpf.onrender.com"; 
+// In dev: Vite proxy handles /api -> localhost:5000
+// In prod: Vercel rewrites handle /api -> Render backend
+const BASE_URL = "";
 
 const apiFetch = async (endpoint, options = {}) => {
-  
-  // 2. COMBINE THE BASE URL WITH THE ENDPOINT
   const fullUrl = `${BASE_URL}${endpoint}`;
 
   const response = await fetch(fullUrl, {

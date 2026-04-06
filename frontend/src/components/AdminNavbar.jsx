@@ -17,16 +17,20 @@ function AdminNavbar() {
         >
           Dashboard
         </NavLink>
-        {/* You can add more admin links here as your app grows */}
-        <NavLink 
-          to="/hr/create-employee" 
+        <NavLink
+          to="/admin/create-job"
+          className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}
+        >
+          Post Job
+        </NavLink>
+        <NavLink
+          to="/hr/create-employee"
           className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}
         >
           Onboard Employee
         </NavLink>
-        {/* ADD THIS NEW LINK */}
-        <NavLink 
-          to="/admin/employees" 
+        <NavLink
+          to="/admin/employees"
           className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}
         >
           Employee Directory
