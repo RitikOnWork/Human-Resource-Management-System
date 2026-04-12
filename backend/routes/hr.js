@@ -176,5 +176,52 @@ router.post("/create-employee", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+const { exec } = require("child_process");
+const path = require("path");
+
+// Helper for running Java Services synchronously via Promises
+const runAdminJavaEngine = (engineDir, className, argsStr) => {
+  return new Promise((resolve, reject) => {
+    const enginePath = path.join(__dirname, `../services/${engineDir}`);
+    const command = `java -cp "${enginePath}" ${className} "${argsStr}"`;
+    exec(command, (error, stdout, stderr) => {
+      if (error) {
+        console.error(`${className} Error:`, stderr);
+        return resolve({ status: "error", message: "Java Engine failed" });
+      }
+      try {
+        resolve(JSON.parse(stdout));
+      } catch (e) {
+        resolve({ status: "error", message: "Parse error" });
+      }
+    });
+  });
+};
+
+// POST /api/hr/java-tools/leave-batch
+router.post("/java-tools/leave-batch", async (req, res) => {
+  try {
+    const { balance, tenure } = req.body;
+    if (balance === undefined || tenure === undefined) return res.status(400).json({ error: "Required params missing" });
+    
+    const result = await runAdminJavaEngine("leave-processor", "LeaveBatchProcessor", `${balance},${tenure}`);
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// POST /api/hr/java-tools/compliance-report
+router.post("/java-tools/compliance-report", async (req, res) => {
+  try {
+    const { department } = req.body;
+    if (!department) return res.status(400).json({ error: "Department missing" });
+    
+    const result = await runAdminJavaEngine("reporting-engine", "ReportingEngine", department);
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 module.exports = router;
