@@ -22,18 +22,18 @@ connectDB();
 // Security headers
 app.use(helmet());
 
-// Rate limiting — max 100 requests per 15 minutes per IP
+// Rate limiting — max 500 requests per 15 minutes per IP (Increased for Dev/Testing)
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 100,
+  max: 500,
   message: { error: "Too many requests, please try again later" },
 });
 app.use("/api/", limiter);
 
-// Stricter limiter for auth routes — max 20 attempts per 15 min
+// Stricter limiter for auth routes — max 100 attempts per 15 min (Increased for Dev/Testing)
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 20,
+  max: 100,
   message: { error: "Too many login attempts, please try again later" },
 });
 app.use("/api/auth/login", authLimiter);

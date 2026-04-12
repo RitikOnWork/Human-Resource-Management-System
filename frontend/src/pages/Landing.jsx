@@ -5,38 +5,9 @@ import './landing.css';
 
 const Landing = () => {
   const [inZone, setInZone] = useState(false);
-  const [activeTab, setActiveTab] = useState('admin');
-
-  const roleData = {
-    admin: {
-      title: 'Admin Command Center',
-      metrics: [
-        { value: '12466', label: 'ACTIVE WORKFORCE' },
-        { value: '94.2%', label: 'DEPARTMENT EFFICIENCY' },
-        { value: '23', label: 'AI ALERTS TODAY' }
-      ]
-    },
-    employee: {
-      title: 'Employee Portal',
-      metrics: [
-        { value: '98%', label: 'ATTENDANCE RATE' },
-        { value: '4', label: 'AVAILABLE LEAVES' },
-        { value: '1', label: 'PENDING TASKS' }
-      ]
-    },
-    candidate: {
-      title: 'Career Hub',
-      metrics: [
-        { value: '3', label: 'ACTIVE APPLICATIONS' },
-        { value: '85%', label: 'PROFILE MATCH' },
-        { value: '2', label: 'UPCOMING INTERVIEWS' }
-      ]
-    }
-  };
 
   return (
     <>
-
       {/* --- Hero Section --- */}
       <section className="hero-section dark-premium">
         <div className="hero-background">
@@ -107,7 +78,6 @@ const Landing = () => {
           </div>
           
           <div className="geo-demo-grid">
-            {/* Left: Mobile Phone Mockup */}
             <div className="mobile-mockup-wrapper">
               <div className="mobile-phone">
                 <div className="mobile-status-bar">
@@ -133,7 +103,6 @@ const Landing = () => {
               </div>
             </div>
 
-            {/* Right: Demo Controls & Features */}
             <div className="geo-demo-controls">
               <h3 className="demo-title">Try it yourself:</h3>
               <div className="demo-buttons">
@@ -179,13 +148,11 @@ const Landing = () => {
       {/* --- AI Recruitment Section --- */}
       <section className="ai-recruitment-section">
         <div className="container">
-          {/* Header */}
           <div className="ai-header-grid">
             <h2 className="ai-title">AI-Powered Recruitment<br />Engine</h2>
             <p className="ai-subtitle">Faster hiring. Reduced bias. Best-fit talent automatically surfaced.</p>
           </div>
 
-          {/* Workflow Diagram */}
           <div className="ai-workflow">
             <div className="ai-flow-step">
               <div className="ai-circle"><FileText size={32} color="#06b6d4" /></div>
@@ -211,7 +178,6 @@ const Landing = () => {
             </div>
           </div>
 
-          {/* Candidate Match Cards */}
           <div className="ai-candidates-grid">
             <div className="ai-candidate-card">
               <h4>Candidate A</h4>
@@ -249,110 +215,6 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* --- Role Dashboards Section --- */}
-      <section className="role-dashboard-section">
-        <div className="container">
-          <div className="roles-tabs-container">
-            <div className="roles-tabs-bg">
-              <button 
-                className={`role-tab ${activeTab === 'admin' ? 'active' : ''}`}
-                onClick={() => setActiveTab('admin')}
-              >
-                Admin / HR
-              </button>
-              <button 
-                className={`role-tab ${activeTab === 'employee' ? 'active' : ''}`}
-                onClick={() => setActiveTab('employee')}
-              >
-                Employee
-              </button>
-              <button 
-                className={`role-tab ${activeTab === 'candidate' ? 'active' : ''}`}
-                onClick={() => setActiveTab('candidate')}
-              >
-                Candidate
-              </button>
-            </div>
-          </div>
-
-          <div className="role-dashboard-content">
-            <h2 className="role-dashboard-title">{roleData[activeTab].title}</h2>
-            
-            <div className="role-metrics-grid">
-              {roleData[activeTab].metrics.map((metric, idx) => (
-                <div key={idx} className="role-metric-card">
-                  <div className="role-metric-value">
-                    {metric.value.replace('%', '')}
-                    {metric.value.includes('%') && <span className="percent-sign">%</span>}
-                  </div>
-                  <div className="role-metric-label">{metric.label}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* --- Top Performers Section --- */}
-      <section className="top-performers-section">
-        <div className="container">
-          <div className="performers-container">
-            <h2 className="performers-title">Top Performers — Organization Wide</h2>
-            <div className="performers-list-wrapper">
-              <div className="performers-list">
-                
-                <div className="performer-row">
-                  <div className="performer-rank">#1</div>
-                  <div className="performer-info">
-                    <div className="performer-name">Rajesh Kumar</div>
-                    <div className="performer-dept">Engineering</div>
-                  </div>
-                  <div className="performer-score">9.8</div>
-                </div>
-
-                <div className="performer-row">
-                  <div className="performer-rank">#2</div>
-                  <div className="performer-info">
-                    <div className="performer-name">Priya Singh</div>
-                    <div className="performer-dept">Product Management</div>
-                  </div>
-                  <div className="performer-score">9.6</div>
-                </div>
-
-                <div className="performer-row">
-                  <div className="performer-rank">#3</div>
-                  <div className="performer-info">
-                    <div className="performer-name">Amit Verma</div>
-                    <div className="performer-dept">Customer Success</div>
-                  </div>
-                  <div className="performer-score">9.4</div>
-                </div>
-
-                <div className="performer-row">
-                  <div className="performer-rank">#4</div>
-                  <div className="performer-info">
-                    <div className="performer-name">Sneha Patel</div>
-                    <div className="performer-dept">Administration</div>
-                  </div>
-                  <div className="performer-score">9.3</div>
-                </div>
-
-                {/* Additional rows for scroll effect */}
-                <div className="performer-row">
-                  <div className="performer-rank">#5</div>
-                  <div className="performer-info">
-                    <div className="performer-name">Vikram Sharma</div>
-                    <div className="performer-dept">Sales</div>
-                  </div>
-                  <div className="performer-score">9.1</div>
-                </div>
-
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* --- Features Section --- */}
       <section className="features-section">
         <div className="container">
@@ -362,7 +224,6 @@ const Landing = () => {
           </div>
           
           <div className="features-grid">
-            {/* Wrapped the card in a Link to make it clickable */}
             <Link to="/platform" className="feature-card" style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>
               <div className="feature-icon">📍</div>
               <h3>Geo-Fenced Attendance</h3>
@@ -398,7 +259,6 @@ const Landing = () => {
           </div>
         </div>
       </section>
-
     </>
   );
 };

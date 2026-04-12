@@ -4,24 +4,33 @@ import { icons } from './Icons';
 
 const EmployeesView = ({ filteredEmployees, handleViewEmployee, setShowAddEmployee }) => {
   return (
-    <div className="section-content">
-      <div className="section-header">
-        <h2>Employee Management</h2>
+    <div className="section-content employee-management">
+      <div className="admin-header">
+        <h2 className="admin-title">Employee Management</h2>
         <button className="primary-btn" onClick={() => setShowAddEmployee(true)}>
-          {icons.plus} Add Employee
+          {icons.plus} Register New Personnel
         </button>
       </div>
-      <div className="employee-list">
+
+      <div className="employee-grid">
         {filteredEmployees.map(emp => (
-          <div key={emp.id} className="employee-card" onClick={() => handleViewEmployee(emp)}>
-            <div className="employee-avatar">{Data.getInitials(emp.name)}</div>
-            <div className="employee-info">
-              <div className="employee-name">{emp.name}</div>
-              <div className="employee-meta">{emp.department} • {emp.id}</div>
+          <div key={emp.id} className="employee-card premium-card" onClick={() => handleViewEmployee(emp)}>
+            <div className="card-accent"></div>
+            <div className="employee-card-body">
+                <div className="employee-avatar-main">{Data.getInitials(emp.name)}</div>
+                <div className="employee-main-content">
+                  <h3 className="employee-name-heading">{emp.name}</h3>
+                  <div className="employee-subtitle">{emp.department} • <span className="emp-id-tag">{emp.id}</span></div>
+                </div>
+                <div className="status-indicator">
+                    <span className={`status-pill ${emp.status ? emp.status.toLowerCase() : 'active'}`}>
+                        {emp.status}
+                    </span>
+                </div>
             </div>
-            <span className={`status-badge ${emp.status ? emp.status.toLowerCase() : 'active'}`}>
-              {emp.status}
-            </span>
+            <div className="card-footer-actions">
+                <button className="view-profile-btn">View Full Profile</button>
+            </div>
           </div>
         ))}
       </div>

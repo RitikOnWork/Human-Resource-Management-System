@@ -14,18 +14,10 @@ function ProtectedRoute({ children, roles }) {
         return res.json();
       })
       .then((data) => {
-<<<<<<< HEAD
         if (data && data.user && data.user.role) {
           const userRole = data.user.role.toLowerCase();
           const allowedRoles = roles.map(r => r.toLowerCase());
           if (allowedRoles.includes(userRole)) {
-=======
-        if (data && data.user) {
-          const userRole = (data.user.role || "").toLowerCase();
-          const requiredRole = (role || "").toLowerCase();
-          // Admin can access admin and hr routes
-          if (userRole === requiredRole || (userRole === "admin" && requiredRole === "hr")) {
->>>>>>> 376d7df58767ed276fda46bd82d1aa5ba19cb3a8
             setAuthorized(true);
           }
         }

@@ -32,88 +32,110 @@ const LeaveView = ({ leaveRequests, handleLeaveAction }) => {
     });
 
   return (
-    <div className="section-content">
-      <div className="section-header">
-        <h2>Leave Requests</h2>
-        <div className="leave-toolbar" style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-          <div className="search-wrapper" style={{ position: 'relative' }}>
-            <span style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: '#64748b' }}>
-              {icons.search}
-            </span>
+    <div className="section-content leave-management">
+      <div className="admin-header">
+        <h2 className="admin-title">Leave Administration</h2>
+        
+        <div className="leave-toolbar">
+          <div className="search-wrapper-premium">
+            <span className="search-icon-mini">{icons.search}</span>
             <input 
               type="text" 
-              placeholder="Search..." 
+              placeholder="Filter by name or type..." 
+              className="search-input-modern"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              style={{ padding: '8px 12px 8px 32px', borderRadius: '8px', border: '1px solid #e2e8f0', minWidth: '220px' }}
             />
           </div>
-          <select className="sort-select" value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}>
-            <option value="all">All Status</option>
-            <option value="pending">Pending</option>
-            <option value="approved">Approved</option>
-            <option value="rejected">Rejected</option>
-          </select>
-          <select className="sort-select" value={dateSort} onChange={(e) => setDateSort(e.target.value)}>
-            <option value="closest">Closest to Today</option>
-            <option value="newest">Further Out</option>
-          </select>
+          
+          <div className="toolbar-controls">
+            <select className="premium-select" value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}>
+              <option value="all">Every Request</option>
+              <option value="pending">⏳ Pending Review</option>
+              <option value="approved">✅ Approved</option>
+              <option value="rejected">❌ Rejected</option>
+            </select>
+            
+            <select className="premium-select" value={dateSort} onChange={(e) => setDateSort(e.target.value)}>
+              <option value="closest">Timeline: Proximal</option>
+              <option value="newest">Timeline: Historical</option>
+            </select>
+          </div>
         </div>
       </div>
 
       {filteredRequests.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '40px', color: '#64748b' }}>
-          <div style={{ fontSize: '48px', marginBottom: '10px' }}>✓</div>
-          <h3>No records found</h3>
+        <div className="empty-state-card">
+          <div className="empty-icon">{icons.check}</div>
+          <h3>Queue is Clear</h3>
+          <p>No leave requests match your current filters.</p>
         </div>
       ) : (
-        <div className="leave-grid">
+        <div className="leave-modern-grid">
           {filteredRequests.map(req => {
             const isExpanded = expandedId === req.id;
             const arrivalDate = new Date(req.endDate);
             arrivalDate.setDate(arrivalDate.getDate() + 1);
 
             return (
-              <div key={req.id} className={`leave-card-expandable ${isExpanded ? 'expanded' : ''} ${req.status}`} onClick={() => toggleExpand(req.id)}>
-                <div className="leave-card-header">
-                  <div className="leave-user-info">
-                    <img src={`https://ui-avatars.com/api/?name=${req.employeeName}&background=random&color=fff`} alt="Profile" className="leave-avatar"/>
-                    <div>
-                      <h4 className="leave-name">{req.employeeName}</h4>
-                      <span className="leave-role">{req.leaveType}</span>
+              <div 
+                key={req.id} 
+                className={`leave-card-premium ${isExpanded ? 'active-expansion' : ''} ${req.status}`} 
+                onClick={() => toggleExpand(req.id)}
+              >
+                <div className="leave-card-top">
+                  <div className="leave-identity">
+                    <div className="leave-avatar-hex">{req.employeeName.charAt(0)}</div>
+                    <div className="leave-info-bundle">
+                      <h4 className="employee-display-name">{req.employeeName}</h4>
+                      <span className="leave-category">{req.leaveType}</span>
                     </div>
                   </div>
-                  <div className="leave-quick-status">
-                    <span className={`status-badge-mini ${req.status}`}>{req.status}</span>
-                    {!isExpanded && <div className="leave-date-preview">{req.startDate}</div>}
+                  
+                  <div className="leave-status-context">
+                    <span className={`status-pill ${req.status}`}>{req.status}</span>
+                    <button className="expand-trigger">{isExpanded ? icons.chevronUp : icons.chevronDown}</button>
                   </div>
                 </div>
-                {isExpanded && (
-                  <div className="leave-card-body">
-                    <div className="leave-details-grid">
-                      <div className="detail-box">
-                        <label>Period</label>
-                        <div className="detail-value">{req.startDate} — {req.endDate}</div>
-                        <div className="detail-sub">{req.days} Days</div>
-                      </div>
-                      <div className="detail-box">
-                        <label>Return</label>
-                        <div className="detail-value">{arrivalDate.toLocaleDateString()}</div>
-                      </div>
-                      <div className="detail-box">
-                        <label>History</label>
-                        <div className="detail-value">{req.historicalLeaves || 0} Leaves</div>
-                        <div className="detail-sub">Approved previously</div>
-                      </div>
+
+                <div className={`leave-expansion-content ${isExpanded ? 'visible' : ''}`}>
+                  <div className="leave-details-matrix">
+                    <div className="matrix-item">
+                      <span className="matrix-label">Duration</span>
+                      <div className="matrix-value">{req.startDate} — {req.endDate}</div>
+                      <div className="matrix-sub">{req.days} Business Days</div>
                     </div>
-                    {req.status === 'pending' && (
-                      <div className="leave-actions-row">
-                        <button className="action-btn-large approve" onClick={(e) => { e.stopPropagation(); handleLeaveAction(req.id, 'approved'); }}>{icons.check} Approve</button>
-                        <button className="action-btn-large reject" onClick={(e) => { e.stopPropagation(); handleLeaveAction(req.id, 'rejected'); }}>{icons.x} Reject</button>
-                      </div>
-                    )}
+                    
+                    <div className="matrix-item">
+                      <span className="matrix-label">Resumption</span>
+                      <div className="matrix-value">{arrivalDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</div>
+                      <div className="matrix-sub">First day back</div>
+                    </div>
+
+                    <div className="matrix-item">
+                      <span className="matrix-label">Balance</span>
+                      <div className="matrix-value">{req.historicalLeaves || 0} Records</div>
+                      <div className="matrix-sub">Approved this year</div>
+                    </div>
                   </div>
-                )}
+
+                  {req.status === 'pending' && (
+                    <div className="leave-decision-row">
+                      <button 
+                        className="btn-action-premium approve" 
+                        onClick={(e) => { e.stopPropagation(); handleLeaveAction(req.id, 'approved'); }}
+                      >
+                        {icons.check} Authorize Request
+                      </button>
+                      <button 
+                        className="btn-action-premium reject" 
+                        onClick={(e) => { e.stopPropagation(); handleLeaveAction(req.id, 'rejected'); }}
+                      >
+                        {icons.x} Decline
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
             );
           })}

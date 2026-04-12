@@ -1,20 +1,18 @@
 /* =========================================
-   Employee Sidebar Styling
-   Theme: Classic Blue & White
+   Employee Sidebar - Premium Dark Theme
    ========================================= */
 
 .emp-sidebar {
     width: 280px;
     height: 100vh;
-    background-color: #ffffff;
-    border-right: 1px solid #e2e8f0;
+    background-color: var(--bg-secondary);
+    border-right: 1px solid var(--border-glass);
     display: flex;
     flex-direction: column;
-    position: fixed; /* Fixed to the left */
+    position: fixed; 
     top: 0;
     left: 0;
     z-index: 1000;
-    font-family: 'Inter', sans-serif;
 }
 
 /* Header */
@@ -24,19 +22,16 @@
     align-items: center;
     gap: 12px;
     padding: 0 24px;
-    border-bottom: 1px solid #f1f5f9;
-}
-
-.sidebar-logo-icon svg {
-    width: 36px;
-    height: 36px;
-    filter: drop-shadow(0 2px 4px rgba(37, 99, 235, 0.3));
+    border-bottom: 1px solid var(--border-glass);
 }
 
 .sidebar-app-name {
     font-size: 1.1rem;
     font-weight: 800;
-    color: #1e293b;
+    background: linear-gradient(90deg, #a78bfa, #60a5fa);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
     display: flex;
     flex-direction: column;
     line-height: 1.1;
@@ -44,10 +39,12 @@
 
 .sidebar-app-name span {
     font-size: 0.75rem;
-    color: #64748b;
-    font-weight: 500;
+    color: var(--text-secondary);
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 1px;
+    background: none;
+    -webkit-text-fill-color: var(--text-secondary);
 }
 
 /* Navigation */
@@ -55,15 +52,18 @@
     flex: 1;
     padding: 24px 16px;
     overflow-y: auto;
+    list-style: none; /* Force remove bullets */
 }
 
 .sidebar-nav ul {
     list-style: none;
     padding: 0;
     margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+}
+
+.sidebar-nav li {
+    list-style: none;
+    margin-bottom: 8px;
 }
 
 .nav-btn {
@@ -74,35 +74,40 @@
     padding: 12px 16px;
     background: transparent;
     border: none;
-    border-radius: 8px;
-    color: #64748b;
+    border-radius: 12px;
+    color: var(--text-secondary);
     font-size: 0.95rem;
-    font-weight: 500;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     text-align: left;
 }
 
+.nav-btn i, .nav-btn svg {
+    font-size: 1.2rem;
+    min-width: 24px;
+}
+
 .nav-btn:hover {
-    background-color: #f8fafc;
-    color: #1e293b;
+    background-color: rgba(255, 255, 255, 0.05);
+    color: #ffffff;
+    transform: translateX(4px);
 }
 
 .nav-btn.active {
-    background-color: #eff6ff; /* Light Blue */
-    color: #2563eb; /* Primary Blue */
-    font-weight: 600;
+    background: linear-gradient(90deg, rgba(139, 92, 246, 0.15), transparent);
+    color: var(--accent-purple); 
+    border-left: 4px solid var(--accent-purple);
+    border-radius: 4px 12px 12px 4px;
+    font-weight: 800;
+    box-shadow: -10px 0 20px rgba(139, 92, 246, 0.1);
 }
 
-.nav-icon {
-    display: flex;
-    align-items: center;
-}
 
 /* Footer */
 .sidebar-footer {
     padding: 24px;
-    border-top: 1px solid #f1f5f9;
+    border-top: 1px solid var(--border-glass);
 }
 
 .logout-btn {
@@ -112,34 +117,23 @@
     justify-content: center;
     gap: 8px;
     padding: 12px;
-    background-color: #fff1f2;
-    color: #e11d48;
-    border: 1px solid #ffe4e6;
+    background-color: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.15);
     border-radius: 8px;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.3s ease;
     margin-bottom: 8px;
 }
 
 .logout-btn:hover {
-    background-color: #ffe4e6;
-    border-color: #fecdd3;
+    background-color: #ef4444;
+    color: white;
 }
 
 .footer-version {
     text-align: center;
     font-size: 0.75rem;
-    color: #94a3b8;
-}
-
-/* Mobile Hiding */
-@media (max-width: 768px) {
-    .emp-sidebar {
-        transform: translateX(-100%);
-        transition: transform 0.3s ease;
-    }
-    .emp-sidebar.open {
-        transform: translateX(0);
-    }
+    color: var(--text-secondary);
 }

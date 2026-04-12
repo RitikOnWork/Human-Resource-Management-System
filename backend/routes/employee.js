@@ -1,12 +1,44 @@
 const express = require("express");
 const router = express.Router();
 const { requireRole } = require("../middleware/auth");
+const { exec } = require("child_process");
+const path = require("path");
 const User = require("../models/User");
 const Employee = require("../models/Employee");
 const Attendance = require("../models/Attendance");
 const LeaveRequest = require("../models/LeaveRequest");
 
 router.use(requireRole("employee", "hr", "admin"));
+
+// POST /api/employee/payroll/calculate (Using Java Engine)
+router.post("/payroll/calculate", async (req, res) => {
+  try {
+    const { baseSalary, taxRate } = req.body;
+    
+    if (!baseSalary || !taxRate) {
+      return res.status(400).json({ error: "Salary and Tax Rate are required" });
+    }
+
+    const enginePath = path.join(__dirname, "../services/payroll-engine");
+    const command = `java -cp "${enginePath}" PayrollEngine ${baseSalary} ${taxRate}`;
+
+    exec(command, (error, stdout, stderr) => {
+      if (error) {
+        console.error("Java Engine Error:", stderr);
+        return res.status(500).json({ error: "Payroll Engine Failed", details: stderr });
+      }
+      
+      try {
+        const result = JSON.parse(stdout);
+        res.json(result);
+      } catch (parseError) {
+        res.status(500).json({ error: "Failed to parse engine output" });
+      }
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 // GET /api/employee/dashboard
 router.get("/dashboard", async (req, res) => {

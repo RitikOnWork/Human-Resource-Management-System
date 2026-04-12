@@ -48,7 +48,7 @@ const ManagerSidebar = ({ activeTab, onTabChange, onLogout }) => {
           <LogoutIcon />
           <span>Logout</span>
         </button>
-        <div className="footer-version">v1.2.0 • Municipal HR</div>
+        <div className="footer-version">v1.2.0 • HRSync</div>
       </div>
     </aside>
   );

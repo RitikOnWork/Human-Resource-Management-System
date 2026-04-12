@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import AdminLayout from "../../components/AdminLayout";
+import "./admin.css";
 
 function AdminEmployees() {
   const [employees, setEmployees] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetch("/api/hr/employees", {
@@ -22,39 +24,55 @@ function AdminEmployees() {
             : "",
         }));
         setEmployees(mapped);
+        setLoading(false);
       })
-      .catch((err) => console.error("Failed to fetch employees", err));
+      .catch((err) => {
+        console.error("Failed to fetch employees", err);
+        setLoading(false);
+      });
   }, []);
 
   return (
     <AdminLayout>
-      <h2 style={{ color: '#f9fafb' }}>Employee Directory</h2>
+      <div className="admin-header">
+        <h2 className="admin-title">Employee Directory</h2>
+        <span className="admin-subtitle">{employees.length} Members Total</span>
+      </div>
 
-      {employees.length === 0 ? (
-        <p style={{ color: '#9ca3af' }}>No employees found. Go onboard someone!</p>
-      ) : (
-        <div style={{ display: 'grid', gap: '20px', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', marginTop: '20px' }}>
-          {employees.map((emp) => (
-            <div key={emp.id} style={{ backgroundColor: '#111827', padding: '20px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.3)' }}>
-              <h3 style={{ marginTop: '0', color: '#8b5cf6', marginBottom: '5px' }}>{emp.name}</h3>
-              <p style={{ color: '#9ca3af', marginTop: '0', fontSize: '0.9rem' }}>{emp.email}</p>
+      <div className="admin-container" style={{ padding: '0' }}>
+        {loading ? (
+             <div className="status-message">Loading Directory...</div>
+        ) : employees.length === 0 ? (
+          <div className="status-message" style={{ color: '#9ca3af' }}>No employees found. Go onboard someone!</div>
+        ) : (
+          <div className="admin-grid" style={{ marginTop: '20px' }}>
+            {employees.map((emp) => (
+              <div key={emp.id} className="card employee-item">
+                <div className="employee-card-header">
+                    <div className="employee-avatar-large">{emp.name.charAt(0)}</div>
+                    <div className="employee-main-info">
+                        <h3 className="employee-name-dir">{emp.name}</h3>
+                        <p className="employee-email-dir">{emp.email}</p>
+                    </div>
+                </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '15px', color: '#d1d5db' }}>
-                <div><strong>Code:</strong> {emp.id}</div>
-                <div><strong>Department:</strong> {emp.department}</div>
-                <div><strong>Role:</strong> {emp.position}</div>
-                <div><strong>Joined:</strong> {emp.joinedDate}</div>
-                <div>
-                  <strong>Status:</strong>
-                  <span style={{ marginLeft: '8px', backgroundColor: emp.status === 'active' ? 'rgba(16,185,129,0.2)' : 'rgba(239,68,68,0.2)', color: emp.status === 'active' ? '#10b981' : '#ef4444', padding: '4px 10px', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 'bold' }}>
-                    {emp.status.toUpperCase()}
-                  </span>
+                <div className="employee-details-grid">
+                  <div className="detail-row"><strong>Code:</strong> <span>{emp.id}</span></div>
+                  <div className="detail-row"><strong>Department:</strong> <span>{emp.department}</span></div>
+                  <div className="detail-row"><strong>Role:</strong> <span>{emp.position}</span></div>
+                  <div className="detail-row"><strong>Joined:</strong> <span>{emp.joinedDate}</span></div>
+                </div>
+                
+                <div className="employee-status-row">
+                    <span className={`status-pill ${emp.status.toLowerCase()}`}>
+                      {emp.status.toUpperCase()}
+                    </span>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
+      </div>
     </AdminLayout>
   );
 }

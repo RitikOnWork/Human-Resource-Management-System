@@ -35,6 +35,9 @@ const ManagerDashboard = lazy(() => import("./pages/manager/ManagerDashboard"));
 // Employee Dashboards
 const EmployeeDashboard = lazy(() => import("./pages/employee/EmployeeDashboard"));
 
+// Candidate Dashboards
+const CandidatePortal = lazy(() => import("./pages/candidate/CandidatePortal"));
+
 // A simple loading fallback for Suspense
 const GlobalLoader = () => (
   <div style={{ display: 'flex', height: '100vh', justifyContent: 'center', alignItems: 'center', backgroundColor: '#0b0f19' }}>
@@ -65,11 +68,7 @@ function App() {
         <Route
           path="/hr/dashboard"
           element={
-<<<<<<< HEAD
             <ProtectedRoute roles={['admin', 'hr']}>
-=======
-            <ProtectedRoute role="hr">
->>>>>>> 376d7df58767ed276fda46bd82d1aa5ba19cb3a8
               <HRDashboard />
             </ProtectedRoute>
           }
@@ -112,20 +111,16 @@ function App() {
           }
         />
 
-<<<<<<< HEAD
-        {/* --- SECURE MANAGER ROUTES --- */}
-=======
         <Route
           path="/admin/job/:jobId/applications"
           element={
-            <ProtectedRoute role="admin">
+            <ProtectedRoute roles={['admin']}>
               <AdminApplications />
             </ProtectedRoute>
           }
         />
 
-        {/* --- SECURE CANDIDATE ROUTES --- */}
->>>>>>> 376d7df58767ed276fda46bd82d1aa5ba19cb3a8
+        {/* --- SECURE MANAGER ROUTES --- */}
         <Route
           path="/manager/dashboard"
           element={
@@ -141,6 +136,15 @@ function App() {
           element={
             <ProtectedRoute roles={['employee']}>
               <EmployeeDashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/candidate/portal"
+          element={
+            <ProtectedRoute roles={['candidate']}>
+              <CandidatePortal />
             </ProtectedRoute>
           }
         />

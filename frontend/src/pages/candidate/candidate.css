@@ -1,0 +1,257 @@
+/* =========================================
+   Candidate Portal - Flagship Dark Theme
+   Theme: OLED Black & Neon Cyan
+   ========================================= */
+
+:root {
+  --candidate-accent: #22d3ee;
+  --candidate-accent-glow: rgba(34, 211, 238, 0.4);
+  --candidate-bg-glass: rgba(255, 255, 255, 0.03);
+  --candidate-border-glass: rgba(255, 255, 255, 0.08);
+}
+
+.candidate-portal-layout {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+    background-color: #000000;
+    color: #ffffff;
+}
+
+.candidate-sidebar {
+    width: 300px;
+    height: 100vh;
+    background-color: rgba(255, 255, 255, 0.01);
+    backdrop-filter: blur(20px);
+    border-right: 1px solid var(--candidate-border-glass);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+.candidate-sidebar-header {
+    height: 100px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 0 30px;
+}
+
+.candidate-app-name {
+    font-size: 1.4rem;
+    font-weight: 800;
+    background: linear-gradient(90deg, #22d3ee, #0ea5e9);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+}
+
+.candidate-app-name span {
+    font-size: 0.8rem;
+    color: #94a3b8;
+    background: none;
+    -webkit-text-fill-color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.candidate-sidebar-nav {
+    flex: 1;
+    padding: 30px 20px;
+}
+
+.candidate-sidebar-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.candidate-nav-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 14px 20px;
+    background: transparent;
+    border: none;
+    border-radius: 14px;
+    color: #94a3b8;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    text-align: left;
+    margin-bottom: 8px;
+}
+
+.candidate-nav-btn:hover {
+    background: rgba(34, 211, 238, 0.05);
+    color: #ffffff;
+    transform: translateX(5px);
+}
+
+.candidate-nav-btn.active {
+    background: linear-gradient(90deg, rgba(34, 211, 238, 0.15), transparent);
+    color: var(--candidate-accent);
+    border-left: 4px solid var(--candidate-accent);
+    border-radius: 4px 14px 14px 4px;
+    font-weight: 800;
+}
+
+.candidate-logout-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px;
+    background: rgba(239, 68, 68, 0.05);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.1);
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.candidate-logout-btn:hover {
+    background: #ef4444;
+    color: white;
+}
+
+.candidate-footer-version {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 0.75rem;
+    color: #475569;
+}
+
+/* Content Area */
+.candidate-main-content {
+    flex: 1;
+    margin-left: 300px;
+    padding: 3.5rem;
+    max-width: 1400px;
+}
+
+.candidate-page-title {
+    font-size: 2.5rem;
+    font-weight: 900;
+    margin-bottom: 3rem;
+    background: linear-gradient(90deg, #ffffff, #94a3b8);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Dashboard Cards */
+.candidate-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2rem;
+}
+
+.candidate-card {
+    background: var(--candidate-bg-glass);
+    backdrop-filter: blur(24px);
+    border: 1px solid var(--candidate-border-glass);
+    border-radius: 24px;
+    padding: 2.5rem;
+    transition: all 0.4s ease;
+}
+
+.candidate-card:hover {
+    transform: translateY(-8px);
+    border-color: rgba(34, 211, 238, 0.3);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.candidate-card h3 {
+    margin-bottom: 1.5rem;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--candidate-accent);
+}
+
+/* Job Cards */
+.job-listing-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+}
+
+.glass-job-card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--candidate-border-glass);
+    border-radius: 20px;
+    padding: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.glass-job-card:hover {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.job-info h4 { font-size: 1.3rem; font-weight: 800; color: #ffffff; margin-bottom: 8px; }
+.job-meta { display: flex; gap: 20px; color: #94a3b8; font-size: 0.9rem; font-weight: 600; }
+
+.apply-btn {
+    padding: 12px 28px;
+    background: linear-gradient(135deg, #22d3ee 0%, #0ea5e9 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: 800;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
+}
+
+.apply-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(14, 165, 233, 0.5);
+}
+
+.apply-btn.applied {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    box-shadow: none;
+    cursor: default;
+}
+
+/* Filters */
+.candidate-filters {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+    background: rgba(255, 255, 255, 0.02);
+    padding: 1.5rem;
+    border-radius: 20px;
+    border: 1px solid var(--candidate-border-glass);
+}
+
+.candidate-input {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-size: 0.95rem;
+}
+
+.candidate-input:focus {
+    border-color: var(--candidate-accent);
+    outline: none;
+    box-shadow: 0 0 15px var(--candidate-accent-glow);
+}

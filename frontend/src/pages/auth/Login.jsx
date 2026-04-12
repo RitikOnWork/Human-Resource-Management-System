@@ -20,43 +20,12 @@ function Login() {
     setLoading(true);
 
     try {
-<<<<<<< HEAD
       const response = await fetch("/api/auth/login", {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
-=======
-      if (isSignUp) {
-        // --- SIGNUP FLOW ---
-        const response = await fetch("/api/auth/signup", {
-          method: "POST",
-          credentials: "include",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name, email, password }),
-        });
-        
-        const data = await response.json();
-        
-        if (!response.ok) {
-          setError(data.error || "Failed to create account");
-          setLoading(false);
-          return;
-        }
-
-        setMessage("Account created successfully! Please sign in.");
-        setIsSignUp(false); // switch to login mode
-        setPassword(""); // clear password
-      } else {
-        // --- LOGIN FLOW ---
-        const response = await fetch("/api/auth/login", {
-          method: "POST",
-          credentials: "include",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password }),
-        });
->>>>>>> 376d7df58767ed276fda46bd82d1aa5ba19cb3a8
 
       const data = await response.json();
 
@@ -72,6 +41,7 @@ function Login() {
       else if (role === "admin") navigate("/admin/dashboard");
       else if (role === "hr") navigate("/hr/dashboard");
       else if (role === "employee") navigate("/employee/dashboard");
+      else if (role === "candidate") navigate("/candidate/portal");
       else setError("Unknown user role");
 
     } catch (err) {

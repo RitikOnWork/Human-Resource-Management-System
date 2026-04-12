@@ -1,15 +1,32 @@
-import CandidateNavbar from "./CandidateNavbar";
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import CandidateSidebar from "../pages/candidate/CandidateSidebar";
+import "../pages/candidate/candidate.css";
 
-function CandidateLayout({ children }) {
+function CandidateLayout({ children, activeTab, onTabChange }) {
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/auth/logout", { method: "POST", credentials: "include" });
+      sessionStorage.removeItem("role");
+      navigate("/login");
+    } catch (err) {
+      console.error("Logout failed:", err);
+      navigate("/login");
+    }
+  };
+
   return (
-    <div className="candidate-layout">
-      <CandidateNavbar />
+    <div className="candidate-portal-layout">
+      <CandidateSidebar 
+        activeTab={activeTab} 
+        onTabChange={onTabChange} 
+        onLogout={handleLogout} 
+      />
       
-      {/* This is where your page content will automatically be injected */}
-      <main className="candidate-content">
-        <div className="content-container">
+      <main className="candidate-main-content">
           {children}
-        </div>
       </main>
     </div>
   );

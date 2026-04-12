@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import EmployeeSidebar from "./EmployeeSidebar";
 import ApplyLeave from "./ApplyLeave";
+import PayrollView from "./PayrollView";
+import { icons } from "../hr/views/Icons";
 import "./EmployeeDashboard.css";
 
 function EmployeeDashboard() {
@@ -40,13 +42,8 @@ function EmployeeDashboard() {
             setLoading(false);
         })
         .catch((err) => {
-<<<<<<< HEAD
-            console.error("Failed to load dashboard data.", err);
-            setData({ error: true });
-=======
             console.error("Dashboard load error:", err);
             setError(err.message);
->>>>>>> 376d7df58767ed276fda46bd82d1aa5ba19cb3a8
             setLoading(false);
         });
     }
@@ -60,14 +57,18 @@ function EmployeeDashboard() {
 
   // --- Graph Helpers ---
   const getGraphPath = (history) => {
-    if (!history) return "";
-    const points = history.map((val, i) => `${(i / 5) * 100},${100 - (val / 10) * 100}`).join(" ");
+    if (!history || history.length === 0) return "";
+    const filteredPoints = history.filter(val => typeof val === 'number' && !isNaN(val));
+    if (filteredPoints.length < 2) return "";
+    const points = filteredPoints.map((val, i) => `${(i / (filteredPoints.length - 1)) * 100},${100 - (val / 10) * 100}`).join(" ");
     return `M0,100 ${points} L100,100 Z`;
   };
   
   const getGraphLine = (history) => {
-    if (!history) return "";
-    return history.map((val, i) => `${(i / 5) * 100},${100 - (val / 10) * 100}`).join(" ");
+    if (!history || history.length === 0) return "";
+    const filteredPoints = history.filter(val => typeof val === 'number' && !isNaN(val));
+    if (filteredPoints.length < 2) return "";
+    return filteredPoints.map((val, i) => `${(i / (filteredPoints.length - 1)) * 100},${100 - (val / 10) * 100}`).join(" ");
   };
 
   const handleLogout = async () => {
@@ -98,17 +99,10 @@ function EmployeeDashboard() {
             <>
                 {loading ? (
                     <div className="emp-loading"><div className="spinner"></div>Loading Dashboard...</div>
-<<<<<<< HEAD
-                ) : data?.error ? (
-                    <div className="emp-error-state" style={{ textAlign: "center", padding: "4rem 2rem", background: "rgba(30,30,40,0.5)", borderRadius: "12px", border: "1px solid rgba(255,255,255,0.05)", marginTop: "2rem" }}>
-                        <h2 style={{ color: "#f87171", marginBottom: "1rem" }}>Could not load dashboard. Please refresh.</h2>
-                        <button onClick={() => window.location.reload()} style={{ padding: "0.75rem 1.5rem", background: "#3b82f6", color: "white", border: "none", borderRadius: "8px", cursor: "pointer", fontWeight: "600", transition: "0.2s" }}>Refresh Page</button>
-=======
                 ) : error ? (
                     <div className="emp-loading">
                       <p style={{ color: '#ef4444' }}>Failed to load dashboard: {error}</p>
                       <button onClick={() => setActiveTab('dashboard')} style={{ marginTop: '12px', padding: '8px 20px', background: '#6366f1', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer' }}>Retry</button>
->>>>>>> 376d7df58767ed276fda46bd82d1aa5ba19cb3a8
                     </div>
                 ) : (
                     <div className="emp-dashboard-container">
@@ -154,8 +148,14 @@ function EmployeeDashboard() {
                                     {data?.stats.jioHazariStatus === 'In Zone' ? 'YOU ARE IN ZONE' : 'OUT OF ZONE'}
                                 </div>
                                 <div className="jio-details">
-                                    <span>GPS Signal: Strong</span>
-                                    <span>Verified: {currentTime.toLocaleTimeString()}</span>
+                                    <div className="jio-detail-row">
+                                      <span className="jio-lbl">GPS Signal:</span> 
+                                      <span className="jio-val">Strong</span>
+                                    </div>
+                                    <div className="jio-detail-row">
+                                      <span className="jio-lbl">Verified at:</span> 
+                                      <span className="jio-val">{currentTime.toLocaleTimeString()}</span>
+                                    </div>
                                 </div>
                             </div>
 
@@ -168,7 +168,9 @@ function EmployeeDashboard() {
                             <div className="emp-card">
                                 <div className="card-label">Leave Balance</div>
                                 <div className="stat-large">{data?.stats.leavesBalance} <span className="unit">Days</span></div>
-                                <button className="btn-text" onClick={() => setActiveTab('leaves')}>Apply Leave →</button>
+                                <button className="emp-action-link" onClick={() => setActiveTab('leaves')}>
+                                  Open Leave Portal {icons.arrowRight}
+                                </button>
                             </div>
                         </div>
 
@@ -184,14 +186,14 @@ function EmployeeDashboard() {
                                         <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="emp-trend-svg">
                                             <defs>
                                                 <linearGradient id="blueGradient" x1="0" x2="0" y1="0" y2="1">
-                                                    <stop offset="0%" stopColor="#2563eb" stopOpacity="0.3"/>
-                                                    <stop offset="100%" stopColor="#2563eb" stopOpacity="0"/>
+                                                    <stop offset="0%" stopColor="#a78bfa" stopOpacity="0.4"/>
+                                                    <stop offset="100%" stopColor="#a78bfa" stopOpacity="0"/>
                                                 </linearGradient>
                                             </defs>
                                             <path d={getGraphPath(data?.performanceHistory)} fill="url(#blueGradient)" />
-                                            <polyline points={getGraphLine(data?.performanceHistory)} fill="none" stroke="#2563eb" strokeWidth="2" />
-                                            {data?.performanceHistory.map((val, i) => (
-                                                <circle key={i} cx={(i / 5) * 100} cy={100 - (val / 10) * 100} r="2" fill="#fff" stroke="#2563eb" strokeWidth="1" />
+                                            <polyline points={getGraphLine(data?.performanceHistory)} fill="none" stroke="#a78bfa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                            {data?.performanceHistory && data?.performanceHistory.map((val, i) => (
+                                                <circle key={i} cx={(i / (data.performanceHistory.length - 1)) * 100} cy={100 - (val / 10) * 100} r="1.5" fill="#fff" />
                                             ))}
                                         </svg>
                                     </div>
@@ -234,10 +236,10 @@ function EmployeeDashboard() {
 
         {/* --- OTHER TABS --- */}
         {activeTab === 'leaves' && <ApplyLeave />}  {/* ✅ LINKED HERE */}
+        {activeTab === 'payroll' && <PayrollView />} {/* ✅ LINKED HERE */}
          
         {activeTab === 'profile' && <div className="placeholder-view"><h2>My Profile View</h2><p>Profile update form goes here.</p></div>}
         {activeTab === 'attendance' && <div className="placeholder-view"><h2>Attendance Calendar</h2><p>Calendar component goes here.</p></div>}
-        {activeTab === 'payroll' && <div className="placeholder-view"><h2>Payroll & Salary</h2><p>Salary slips list goes here.</p></div>}
         {activeTab === 'settings' && <div className="placeholder-view"><h2>Settings</h2><p>Account settings go here.</p></div>}
       
       </main>

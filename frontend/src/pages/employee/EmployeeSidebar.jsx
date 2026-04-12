@@ -17,8 +17,8 @@ const EmployeeSidebar = ({ activeTab, onTabChange, onLogout }) => {
       <div className="sidebar-header">
         <div className="sidebar-logo-icon">
           <svg viewBox="0 0 40 40" fill="none">
-             <rect width="40" height="40" rx="8" fill="#2563eb" />
-             <path d="M20 10 L30 20 L20 30 L10 20 Z" fill="white" />
+             <rect width="40" height="40" rx="12" fill="rgba(167, 139, 250, 0.15)" stroke="rgba(167, 139, 250, 0.3)" strokeWidth="1"/>
+             <path d="M20 12 L28 20 L20 28 L12 20 Z" fill="#a78bfa" />
           </svg>
         </div>
         <div className="sidebar-app-name">
@@ -50,7 +50,7 @@ const EmployeeSidebar = ({ activeTab, onTabChange, onLogout }) => {
           <LogoutIcon />
           <span>Logout</span>
         </button>
-        <div className="footer-version">v1.2.0 • Municipal HR</div>
+        <div className="footer-version">v1.2.0 • HRSync</div>
       </div>
     </aside>
   );

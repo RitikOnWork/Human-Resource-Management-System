@@ -12,15 +12,10 @@ import LeaveView from './views/LeaveView';
 import PayrollView from './views/PayrollView';
 import ReportsView from './views/ReportsView';
 import SettingsView from './views/SettingsView';
+import PerformanceView from './views/PerformanceView';
 import AttendanceDetailModal from './views/AttendanceDetailModal';
-<<<<<<< HEAD
-import { getCurrentUser, getHRUser } from '../../services/auth';
-import { approveLeaveRequest, rejectLeaveRequest } from '../../services/hr';
-=======
-import { useNavigate } from 'react-router-dom';
 import { getCurrentUser, getHRUser, logout } from '../../services/auth';
 import { getEmployees, getDepartments, getAttendance, getLeaveRequests, getStats, approveLeaveRequest, rejectLeaveRequest } from '../../services/hr';
->>>>>>> 376d7df58767ed276fda46bd82d1aa5ba19cb3a8
 
 const HRDashboard = () => {
   const navigate = useNavigate();
@@ -113,11 +108,17 @@ const HRDashboard = () => {
         setLeaveRequests(mapped);
       }).catch(console.error);
 
-      module.getDepartments().then(resp => {
+      module.getDepartments().then(async resp => {
         const colors = ['#2563eb', '#059669', '#d97706', '#dc2626', '#7c3aed', '#0891b2', '#ea580c', '#4f46e5'];
+        
+        // Fetch attendance records to count employees per department as requested
+        const attResp = await module.getAttendance();
+        const attRecords = attResp.attendance || [];
+        
         const mapped = (resp.departments || []).map((dept, i) => ({
           name: dept.name,
-          employees: 0,
+          // Count unique employees from attendance records for this department
+          employees: attRecords.filter(a => a.employee?.department === dept.name).length,
           color: colors[i % colors.length]
         }));
         setDepartments(mapped);
@@ -269,8 +270,8 @@ const HRDashboard = () => {
               </svg>
             </div>
             <div className="org-info">
-              <h1>Municipal HR</h1>
-              <p>Government Services</p>
+              <h1>HRSync</h1>
+              <p>Workforce Solutions</p>
             </div>
           </div>
         </div>
@@ -431,8 +432,11 @@ const HRDashboard = () => {
           {/* Settings View */}
           {activeSection === 'settings' && <SettingsView />}
 
-          {/* Fallback for Under Development Sections (Performance, Recruitment) */}
-          {['recruitment', 'performance'].includes(activeSection) && (
+          {/* Performance View */}
+          {activeSection === 'performance' && <PerformanceView />}
+
+          {/* Fallback for Under Development Sections (Recruitment) */}
+          {['recruitment'].includes(activeSection) && (
             <div className="section-content" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
               <div style={{ textAlign: 'center', color: '#9ca3af' }}>
                 <h2 style={{ marginBottom: '10px', color: '#f9fafb' }}>{navItems.find(n => n.id === activeSection)?.label}</h2>
@@ -471,45 +475,63 @@ const HRDashboard = () => {
       )}
 
       {/* Add Employee Modal */}
-      {showAddEmployee && (
+        {showAddEmployee && (
         <>
           <div className="modal-overlay" onClick={() => setShowAddEmployee(false)}></div>
           <div className="modal">
             <div className="modal-header">
-              <h3>Add New Employee</h3>
+              <h3>Register New Personnel</h3>
               <button className="close-btn" onClick={() => setShowAddEmployee(false)}>
                 {icons.x}
               </button>
             </div>
             <div className="modal-body">
-              <form onSubmit={handleAddEmployeeSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                <div className="form-group" style={{ display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
-                  <label style={{ marginBottom: '5px', fontWeight: 'bold' }}>Full Name</label>
-                  <input type="text" value={newEmployeeForm.name} onChange={(e) => setNewEmployeeForm({...newEmployeeForm, name: e.target.value})} required style={{ padding: '10px', borderRadius: '5px', border: '1px solid #374151', background: '#111827', color: 'white' }} />
+              <form onSubmit={handleAddEmployeeSubmit}>
+                <div className="form-group">
+                  <label>Full Name</label>
+                  <input 
+                    type="text" 
+                    placeholder="Enter full name"
+                    value={newEmployeeForm.name} 
+                    onChange={(e) => setNewEmployeeForm({...newEmployeeForm, name: e.target.value})} 
+                    required 
+                  />
                 </div>
-                <div className="form-group" style={{ display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
-                  <label style={{ marginBottom: '5px', fontWeight: 'bold' }}>Email</label>
-                  <input type="email" value={newEmployeeForm.email} onChange={(e) => setNewEmployeeForm({...newEmployeeForm, email: e.target.value})} required style={{ padding: '10px', borderRadius: '5px', border: '1px solid #374151', background: '#111827', color: 'white' }} />
+                <div className="form-group">
+                  <label>Email Address</label>
+                  <input 
+                    type="email" 
+                    placeholder="example@hrsync.io"
+                    value={newEmployeeForm.email} 
+                    onChange={(e) => setNewEmployeeForm({...newEmployeeForm, email: e.target.value})} 
+                    required 
+                  />
                 </div>
-                <div className="form-group" style={{ display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
-                  <label style={{ marginBottom: '5px', fontWeight: 'bold' }}>Department</label>
-                  <select value={newEmployeeForm.department} onChange={(e) => setNewEmployeeForm({...newEmployeeForm, department: e.target.value})} style={{ padding: '10px', borderRadius: '5px', border: '1px solid #374151', background: '#111827', color: 'white' }}>
+                <div className="form-group">
+                  <label>Primary Department</label>
+                  <select 
+                    value={newEmployeeForm.department} 
+                    onChange={(e) => setNewEmployeeForm({...newEmployeeForm, department: e.target.value})}
+                  >
                     <option value="Finance">Finance</option>
                     <option value="Health">Health</option>
                     <option value="Administration">Administration</option>
                     <option value="Public Works">Public Works</option>
                   </select>
                 </div>
-                <div className="form-group" style={{ display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
-                  <label style={{ marginBottom: '5px', fontWeight: 'bold' }}>Role</label>
-                  <select value={newEmployeeForm.role} onChange={(e) => setNewEmployeeForm({...newEmployeeForm, role: e.target.value})} style={{ padding: '10px', borderRadius: '5px', border: '1px solid #374151', background: '#111827', color: 'white' }}>
+                <div className="form-group">
+                  <label>User Role</label>
+                  <select 
+                    value={newEmployeeForm.role} 
+                    onChange={(e) => setNewEmployeeForm({...newEmployeeForm, role: e.target.value})}
+                  >
                     <option value="employee">Employee</option>
                     <option value="manager">Manager</option>
                     <option value="hr">HR</option>
                   </select>
                 </div>
-                <button type="submit" className="primary-btn" disabled={isSubmittingNewEmployee} style={{ marginTop: '10px' }}>
-                  {isSubmittingNewEmployee ? 'Saving...' : 'Create Employee'}
+                <button type="submit" className="primary-btn" disabled={isSubmittingNewEmployee} style={{ width: '100%' }}>
+                  {isSubmittingNewEmployee ? 'Saving Profile...' : 'Complete Registration'}
                 </button>
               </form>
             </div>
@@ -548,7 +570,7 @@ const HRDashboard = () => {
                   </div>
                   <div className="detail-item">
                     <label>Email</label>
-                    <div>{selectedEmployee.email || `${selectedEmployee.name.toLowerCase().replace(' ', '.')}@municipal.gov`}</div>
+                    <div>{selectedEmployee.email || `${selectedEmployee.name.toLowerCase().replace(' ', '.')}@hrsync.io`}</div>
                   </div>
                   <div className="detail-item">
                     <label>Phone</label>
@@ -578,35 +600,23 @@ const HRDashboard = () => {
         />
       )}
 
-      {/* Logout Confirmation Modal */}
       {showLogoutConfirm && (
         <>
           <div className="modal-overlay" onClick={() => setShowLogoutConfirm(false)}></div>
-          <div className="modal small">
+          <div className="modal small modal-blue">
             <div className="modal-header">
-              <h3>Confirm Logout</h3>
+              <h3>Confirm Session Exit</h3>
+              <div className="modal-header-icon blue">{icons.logout || icons.x}</div>
             </div>
             <div className="modal-body">
-              <p>Are you sure you want to logout from the HR Management System?</p>
+              <p>You are about to terminate your administrative session. Are you sure you wish to proceed?</p>
             </div>
             <div className="modal-footer">
               <button className="secondary-btn" onClick={() => setShowLogoutConfirm(false)}>
-                Cancel
+                Stay Authenticated
               </button>
-<<<<<<< HEAD
-              <button className="danger-btn" onClick={async () => {
-                try {
-                  await import('../../services/auth').then(m => m.logout());
-                  navigate('/login');
-                } catch (e) {
-                  console.error('Logout failed', e);
-                  navigate('/login');
-                }
-              }}>
-=======
-              <button className="danger-btn" onClick={async () => { try { await logout(); } catch(e) {} sessionStorage.removeItem('role'); navigate('/login'); }}>
->>>>>>> 376d7df58767ed276fda46bd82d1aa5ba19cb3a8
-                Logout
+              <button className="primary-blue-btn" onClick={async () => { try { await logout(); } catch(e) {} sessionStorage.removeItem('role'); navigate('/login'); }}>
+                {icons.check} Confirm Logout
               </button>
             </div>
           </div>

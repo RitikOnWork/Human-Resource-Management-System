@@ -15,11 +15,11 @@ export const currentUser = {
 
 // --- EMPLOYEES ---
 export const initialEmployees = [
-  { id: 'EMP001', name: 'John Anderson', department: 'Public Works', status: 'Active', position: 'Engineer', email: 'j.anderson@municipal.gov', phone: '555-0101' },
-  { id: 'EMP002', name: 'Maria Garcia', department: 'Finance', status: 'Active', position: 'Accountant', email: 'm.garcia@municipal.gov', phone: '555-0102' },
-  { id: 'EMP003', name: 'David Chen', department: 'Administration', status: 'On Leave', position: 'Clerk', email: 'd.chen@municipal.gov', phone: '555-0103' },
-  { id: 'EMP004', name: 'Emily Brown', department: 'Health Services', status: 'Active', position: 'Nurse', email: 'e.brown@municipal.gov', phone: '555-0104' },
-  { id: 'EMP005', name: 'Michael Wilson', department: 'Parks & Recreation', status: 'Active', position: 'Supervisor', email: 'm.wilson@municipal.gov', phone: '555-0105' },
+  { id: 'EMP001', name: 'John Anderson', department: 'Operations', status: 'Active', position: 'Engineer', email: 'j.anderson@hrsync.io', phone: '555-0101' },
+  { id: 'EMP002', name: 'Maria Garcia', department: 'Finance', status: 'Active', position: 'Accountant', email: 'm.garcia@hrsync.io', phone: '555-0102' },
+  { id: 'EMP003', name: 'David Chen', department: 'Administration', status: 'On Leave', position: 'Clerk', email: 'd.chen@hrsync.io', phone: '555-0103' },
+  { id: 'EMP004', name: 'Emily Brown', department: 'Customer Success', status: 'Active', position: 'Nurse', email: 'e.brown@hrsync.io', phone: '555-0104' },
+  { id: 'EMP005', name: 'Michael Wilson', department: 'Product', status: 'Active', position: 'Supervisor', email: 'm.wilson@hrsync.io', phone: '555-0105' },
 ];
 
 // --- LEAVE REQUESTS ---
@@ -179,3 +179,39 @@ export const getRadarCoordinates = (values, maxVal = 100, center = 100, radius =
   return points;
 };
 
+// --- NEW: PAYROLL DATA ---
+export const payrollStats = [
+  { label: 'Total Expenditure', value: '$124,500', trend: 12, icon: 'dollar' },
+  { label: 'Paid Employees', value: '238/247', trend: 0, icon: 'users' },
+  { label: 'Avg Base Salary', value: '$4,850', trend: -2, icon: 'trending' }
+];
+
+export const payrollRecords = [
+  { id: 1, name: 'John Anderson', department: 'Public Works', basicSalary: '$5,200', month: 'January', status: 'Paid', method: 'Bank Transfer' },
+  { id: 2, name: 'Maria Garcia', department: 'Finance', basicSalary: '$6,400', month: 'January', status: 'Paid', method: 'Direct Deposit' },
+  { id: 3, name: 'David Chen', department: 'Administration', basicSalary: '$4,100', month: 'January', status: 'Pending', method: 'Check' },
+  { id: 4, name: 'Emily Brown', department: 'Health Services', basicSalary: '$5,800', month: 'January', status: 'Paid', method: 'Bank Transfer' },
+  { id: 5, name: 'Michael Wilson', department: 'Parks & Recreation', basicSalary: '$4,500', month: 'January', status: 'Paid', method: 'Direct Deposit' },
+];
+
+// --- NEW: PERFORMANCE DATA ---
+export const performanceStats = [
+  { label: 'Avg Efficiency', value: '94.2%', trend: 4, icon: 'trending' },
+  { label: 'KPI Attainment', value: '88.5%', trend: 2, icon: 'check' },
+  { label: 'Peer Reviews', value: '4.8/5.0', trend: 1, icon: 'star' }
+];
+
+export const topPerformers = [
+  { id: 1, name: 'Rajesh Kumar', department: 'Engineering', score: 9.8, status: 'Exceeding' },
+  { id: 2, name: 'Priya Singh', department: 'Product Management', score: 9.6, status: 'Exceeding' },
+  { id: 3, name: 'Amit Verma', department: 'Customer Success', score: 9.4, status: 'Flagship' },
+  { id: 4, name: 'Sneha Patel', department: 'Administration', score: 9.3, status: 'Flagship' },
+  { id: 5, name: 'Vikram Sharma', department: 'Sales', score: 9.1, status: 'Rising Star' },
+];
+
+// --- NEW: ADMIN COMMAND CENTER DATA ---
+export const adminCommandMetrics = [
+  { label: 'ACTIVE WORKFORCE', value: '12,466', trend: 8, icon: 'users' },
+  { label: 'DEPT EFFICIENCY', value: '94.2%', trend: 3, icon: 'trending' },
+  { label: 'AI ALERTS TODAY', value: '23', trend: -12, icon: 'alert' }
+];
