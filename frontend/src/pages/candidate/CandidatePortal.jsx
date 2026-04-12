@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import CandidateLayout from "../../components/CandidateLayout";
 import { icons } from "../hr/views/Icons";
 import "./candidate.css";
+import CandidateProfile from "./CandidateProfile";
 
 function CandidatePortal() {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -174,6 +175,9 @@ function CandidatePortal() {
             </div>
          </div>
       )}
+
+      {/* --- PROFILE VIEW --- */}
+      {activeTab === 'profile' && <CandidateProfile user={user} />}
 
     </CandidateLayout>
   );

@@ -40,6 +40,25 @@ router.post("/payroll/calculate", async (req, res) => {
   }
 });
 
+// Helper for running Java Services synchronously via Promises
+const runJavaEngine = (engineDir, className, argsStr) => {
+  return new Promise((resolve, reject) => {
+    const enginePath = path.join(__dirname, `../services/${engineDir}`);
+    const command = `java -cp "${enginePath}" ${className} "${argsStr}"`;
+    exec(command, (error, stdout, stderr) => {
+      if (error) {
+        console.error(`${className} Error:`, stderr);
+        return resolve({ status: "error", message: "Java Engine failed" });
+      }
+      try {
+        resolve(JSON.parse(stdout));
+      } catch (e) {
+        resolve({ status: "error", message: "Parse error" });
+      }
+    });
+  });
+};
+
 // GET /api/employee/dashboard
 router.get("/dashboard", async (req, res) => {
   try {
@@ -49,28 +68,21 @@ router.get("/dashboard", async (req, res) => {
     const employee = await Employee.findOne({ user: req.session.userId });
     if (!employee) return res.status(404).json({ error: "Employee record not found" });
 
-    // Get stats
     const totalLeaves = await LeaveRequest.countDocuments({ employee: employee._id });
     const approvedLeaves = await LeaveRequest.countDocuments({ employee: employee._id, status: "approved" });
     const pendingLeaves = await LeaveRequest.countDocuments({ employee: employee._id, status: "pending" });
 
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-    const attendanceCount = await Attendance.countDocuments({
-      employee: employee._id,
-      date: { $gte: thirtyDaysAgo },
-      status: "present",
-    });
-
-    // Performance history (last 6 months placeholder)
-    const performanceHistory = Array.from({ length: 6 }, (_, i) => {
+    // Performance history array 
+    const performanceScores = [6.5, 7.0, 7.8, 8.2, 8.9, 9.2];
+    const performanceHistory = performanceScores.map((score, i) => {
       const date = new Date();
       date.setMonth(date.getMonth() - (5 - i));
-      return {
-        month: date.toLocaleString("default", { month: "short" }),
-        score: Math.floor(Math.random() * 20) + 75,
-      };
+      return { month: date.toLocaleString("default", { month: "short" }), score };
     });
+
+    // Run Java Engines
+    const aiAnalysis = await runJavaEngine('performance-engine', 'PerformanceAIEngine', performanceScores.join(','));
+    const attendanceStats = await runJavaEngine('attendance-engine', 'AttendanceEngine', "8.5,9.0,7.5,8.0,10.0,8.0,8.0,9.5,8.0,8.5");
 
     res.json({
       user: user.toJSON(),
@@ -79,7 +91,9 @@ router.get("/dashboard", async (req, res) => {
         totalLeaves,
         approvedLeaves,
         pendingLeaves,
-        attendanceDaysThisMonth: attendanceCount,
+        attendanceDaysThisMonth: attendanceStats.daysPresent || 0,
+        javaAiAnalysis: aiAnalysis,
+        javaAttendanceStats: attendanceStats
       },
       performanceHistory,
     });
@@ -87,6 +101,7 @@ router.get("/dashboard", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
 
 // POST /api/employee/apply-leave
 router.post("/apply-leave", async (req, res) => {

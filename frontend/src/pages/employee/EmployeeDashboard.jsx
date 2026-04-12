@@ -3,6 +3,9 @@ import { useNavigate } from "react-router-dom";
 import EmployeeSidebar from "./EmployeeSidebar";
 import ApplyLeave from "./ApplyLeave";
 import PayrollView from "./PayrollView";
+import EmployeeProfile from "./EmployeeProfile";
+import AttendanceView from "./AttendanceView";
+import SettingsView from "./SettingsView";
 import { icons } from "../hr/views/Icons";
 import "./EmployeeDashboard.css";
 
@@ -25,12 +28,18 @@ function EmployeeDashboard() {
             return res.json();
         })
         .then((d) => {
+            const javaAi = d.stats?.javaAiAnalysis || {};
+            const javaAtt = d.stats?.javaAttendanceStats || {};
+
             const enrichedData = {
                 ...d,
                 stats: {
                     ...d.stats,
-                    aiScore: 9.2,
-                    attendanceRate: d.stats?.attendanceDaysThisMonth ? Math.min(Math.round((d.stats.attendanceDaysThisMonth / 22) * 100), 100) : 0,
+                    aiScore: javaAi.currentScore ? javaAi.currentScore.toFixed(1) : 9.2,
+                    aiTrend: javaAi.trend || "Stable",
+                    aiRecommendation: javaAi.recommendation || "Maintain consistency.",
+                    attendanceRate: javaAtt.utilizationRate ? Math.round(javaAtt.utilizationRate) : (d.stats?.attendanceDaysThisMonth ? Math.min(Math.round((d.stats.attendanceDaysThisMonth / 22) * 100), 100) : 0),
+                    overtimeHours: javaAtt.overtimeHours ? javaAtt.overtimeHours.toFixed(1) : 0,
                     leavesBalance: (d.stats?.totalLeaves || 0) - (d.stats?.approvedLeaves || 0),
                     tasksCompleted: 45,
                     rank: "Top 5%",
@@ -200,14 +209,24 @@ function EmployeeDashboard() {
                                 </div>
 
                                 <div className="emp-card">
-                                    <h3>🤖 AI Recommendations</h3>
+                                    <h3>🤖 Java AI Recommendations</h3>
                                     <div className="insight-list">
                                         <div className="insight-item">
                                             <div className="insight-icon info">i</div>
                                             <div className="insight-content">
-                                                <strong>Tip:</strong> Check in before 9:00 AM for the next 3 days to boost your score to 9.5.
+                                                <strong>Performance Trend: {data?.stats.aiTrend}</strong><br/>
+                                                {data?.stats.aiRecommendation}
+                                                <div style={{ marginTop: '8px', fontSize: '0.8rem', color: '#6366f1' }}>Powered by JVM Analytics Engine</div>
                                             </div>
                                         </div>
+                                        {data?.stats.overtimeHours > 0 && (
+                                            <div className="insight-item" style={{ marginTop: '10px' }}>
+                                                <div className="insight-icon" style={{ background: '#10b981' }}>⏱</div>
+                                                <div className="insight-content">
+                                                    <strong>Overtime Logged:</strong> You have {data?.stats.overtimeHours} hours of overtime processed by the Java Engine this period.
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             </div>
@@ -238,9 +257,10 @@ function EmployeeDashboard() {
         {activeTab === 'leaves' && <ApplyLeave />}  {/* ✅ LINKED HERE */}
         {activeTab === 'payroll' && <PayrollView />} {/* ✅ LINKED HERE */}
          
-        {activeTab === 'profile' && <div className="placeholder-view"><h2>My Profile View</h2><p>Profile update form goes here.</p></div>}
-        {activeTab === 'attendance' && <div className="placeholder-view"><h2>Attendance Calendar</h2><p>Calendar component goes here.</p></div>}
-        {activeTab === 'settings' && <div className="placeholder-view"><h2>Settings</h2><p>Account settings go here.</p></div>}
+        {activeTab === 'profile' && <EmployeeProfile data={data} />}
+        {activeTab === 'attendance' && <AttendanceView data={data} />}
+        {activeTab === 'settings' && <SettingsView data={data} />}
+
       
       </main>
     </div>

@@ -145,104 +145,113 @@ const ApplyLeave = () => {
   if (loading) return <div className="emp-loading"><div className="spinner"></div>Loading Leave Management...</div>;
 
   return (
-    <div className="leave-container">
-      <header className="leave-portal-header">
-        <h2 className="page-title">Leave Administration</h2>
-        <p className="portal-subtitle">Manage your time-off requests and view accrual balances.</p>
-      </header>
+    <div className="emp-dashboard-container" style={{ animation: 'fadeIn 0.4s ease' }}>
+      <div style={{ marginBottom: '2rem' }}>
+        <h2 className="candidate-page-title" style={{ marginBottom: '0.5rem' }}>Leave Administration</h2>
+        <p style={{ color: '#94a3b8' }}>Manage your time-off requests and view accrual balances.</p>
+      </div>
 
       {/* --- LEAVE BALANCES --- */}
-      <section className="balance-grid">
+      <div className="candidate-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem', marginBottom: '2rem' }}>
         {leaveBalances.map((bal) => (
-          <div key={bal.code} className="balance-card">
-            <div className="balance-icon">{icons[bal.icon] || '📅'}</div>
-            <div className="balance-info">
-              <div className="balance-header">{bal.name}</div>
-              <div className="balance-count">{bal.balance}</div>
-              <div className="balance-sub">Days Available</div>
+          <div key={bal.code} className="candidate-card" style={{ display: 'flex', alignItems: 'center', gap: '15px', padding: '1.5rem', background: 'rgba(255, 255, 255, 0.02)', borderColor: 'rgba(167, 139, 250, 0.2)' }}>
+            <div style={{ background: 'rgba(167, 139, 250, 0.1)', color: '#a78bfa', width: '50px', height: '50px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem' }}>
+                {icons[bal.icon] || '📅'}
+            </div>
+            <div>
+              <div style={{ color: '#fff', fontWeight: 'bold', fontSize: '1.1rem' }}>{bal.name}</div>
+              <div style={{ fontSize: '1.8rem', fontWeight: '900', color: '#a78bfa', lineHeight: '1' }}>{bal.balance}</div>
+              <div style={{ color: '#94a3b8', fontSize: '0.85rem' }}>Days Available</div>
             </div>
           </div>
         ))}
-      </section>
+      </div>
 
-      <div className="leave-content-layout">
+      <div className="candidate-grid" style={{ gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
         
         {/* --- APPLY LEAVE FORM --- */}
-        <div className="leave-form-card">
-          <h3>{icons.edit} Application Form</h3>
-          <form onSubmit={handleSubmit} className="premium-form">
-            <div className="form-group">
-              <label>Select Leave Category</label>
-              <select name="leaveTypeId" value={formData.leaveTypeId} onChange={handleInputChange} required>
-                <option value="">Choose a type...</option>
+        <div className="candidate-card" style={{ background: 'rgba(255, 255, 255, 0.02)', borderColor: 'rgba(167, 139, 250, 0.2)' }}>
+          <h3 style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '1rem', display: 'flex', alignItems: 'center', gap: '10px', color: '#fff', marginBottom: '1.5rem' }}>
+            {icons.edit} Application Form
+          </h3>
+          <form onSubmit={handleSubmit} style={{ display: 'grid', gap: '1.5rem' }}>
+            <div>
+              <label style={{ display: 'block', color: '#94a3b8', marginBottom: '0.5rem', fontSize: '0.9rem' }}>Select Leave Category</label>
+              <select name="leaveTypeId" value={formData.leaveTypeId} onChange={handleInputChange} className="candidate-input" style={{ width: '100%', boxSizing: 'border-box' }} required>
+                <option value="" style={{ color: '#000' }}>Choose a type...</option>
                 {leaveTypes.map(type => (
-                  <option key={type.id} value={type.id}>{type.name}</option>
+                  <option key={type.id} value={type.id} style={{ color: '#000' }}>{type.name}</option>
                 ))}
               </select>
             </div>
 
-            <div className="form-row">
-              <div className="form-group">
-                <label>Commencement Date</label>
-                <input type="date" name="startDate" value={formData.startDate} onChange={handleInputChange} required />
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+              <div>
+                <label style={{ display: 'block', color: '#94a3b8', marginBottom: '0.5rem', fontSize: '0.9rem' }}>Commencement Date</label>
+                <input type="date" name="startDate" value={formData.startDate} onChange={handleInputChange} className="candidate-input" style={{ width: '100%', boxSizing: 'border-box' }} required />
               </div>
-              <div className="form-group">
-                <label>Conclusion Date</label>
-                <input type="date" name="endDate" value={formData.endDate} onChange={handleInputChange} required />
-              </div>
-            </div>
-
-            <div className="form-group">
-              <label>Calculated Duration</label>
-              <div className="duration-pill">
-                {icons.clock} <span>{totalDays} working days</span>
+              <div>
+                <label style={{ display: 'block', color: '#94a3b8', marginBottom: '0.5rem', fontSize: '0.9rem' }}>Conclusion Date</label>
+                <input type="date" name="endDate" value={formData.endDate} onChange={handleInputChange} className="candidate-input" style={{ width: '100%', boxSizing: 'border-box' }} required />
               </div>
             </div>
 
-            <div className="form-group">
-              <label>Justification / Reason</label>
-              <textarea name="reason" rows="3" value={formData.reason} onChange={handleInputChange} placeholder="Administrative reason for absence..." required />
+            <div>
+              <label style={{ display: 'block', color: '#94a3b8', marginBottom: '0.5rem', fontSize: '0.9rem' }}>Calculated Duration</label>
+              <div style={{ background: 'rgba(167, 139, 250, 0.1)', padding: '10px 15px', borderRadius: '8px', color: '#a78bfa', display: 'flex', alignItems: 'center', gap: '8px', border: '1px solid rgba(167, 139, 250, 0.2)' }}>
+                {icons.clock} <span><strong style={{fontSize: '1.1rem'}}>{totalDays}</strong> working days</span>
+              </div>
             </div>
 
-            <div className="form-group">
-                <label>Emergency Contact No.</label>
-                <input type="text" name="contactNumber" value={formData.contactNumber} onChange={handleInputChange} placeholder="+91 XXXX XXX XXX" />
+            <div>
+              <label style={{ display: 'block', color: '#94a3b8', marginBottom: '0.5rem', fontSize: '0.9rem' }}>Justification / Reason</label>
+              <textarea name="reason" rows="3" value={formData.reason} onChange={handleInputChange} placeholder="Administrative reason for absence..." className="candidate-input" style={{ width: '100%', boxSizing: 'border-box', resize: 'vertical' }} required />
             </div>
 
-            <button type="submit" className="submit-btn" disabled={submitting}>
+            <div>
+                <label style={{ display: 'block', color: '#94a3b8', marginBottom: '0.5rem', fontSize: '0.9rem' }}>Emergency Contact No.</label>
+                <input type="text" name="contactNumber" value={formData.contactNumber} onChange={handleInputChange} placeholder="+91 XXXX XXX XXX" className="candidate-input" style={{ width: '100%', boxSizing: 'border-box' }} />
+            </div>
+
+            <button type="submit" className="apply-btn" disabled={submitting} style={{ background: '#a78bfa', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginTop: '0.5rem' }}>
               {submitting ? 'Processing Application...' : <>{icons.check} Submit Leave Request</>}
             </button>
           </form>
         </div>
 
         {/* --- LEAVE HISTORY --- */}
-        <div className="leave-history-card">
-          <h3>{icons.history} Request & Approval Logs</h3>
-          <div className="table-responsive">
-            <table className="leave-table">
+        <div className="candidate-card" style={{ background: 'rgba(255, 255, 255, 0.02)', borderColor: 'rgba(167, 139, 250, 0.2)' }}>
+          <h3 style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '1rem', display: 'flex', alignItems: 'center', gap: '10px', color: '#fff', marginBottom: '1.5rem' }}>
+            {icons.history} Request & Approval Logs
+          </h3>
+          <div style={{ overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
               <thead>
-                <tr>
-                  <th>Category</th>
-                  <th>Duration</th>
-                  <th>Days</th>
-                  <th>Current Status</th>
+                <tr style={{ color: '#94a3b8', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                  <th style={{ padding: '12px 10px', fontWeight: '500' }}>Category</th>
+                  <th style={{ padding: '12px 10px', fontWeight: '500' }}>Duration</th>
+                  <th style={{ padding: '12px 10px', fontWeight: '500' }}>Days</th>
+                  <th style={{ padding: '12px 10px', fontWeight: '500' }}>Status</th>
                 </tr>
               </thead>
               <tbody>
                 {leaveHistory.length > 0 ? (
                   leaveHistory.map((leave) => (
-                    <tr key={leave.id}>
-                      <td className="type-cell"><strong>{leave.leave_type}</strong></td>
-                      <td>
-                        <div className="date-range">
-                          <span>{leave.start_date}</span>
-                          <span className="arrow">→</span>
-                          <span>{leave.end_date}</span>
-                        </div>
+                    <tr key={leave.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.02)' }}>
+                      <td style={{ padding: '15px 10px', color: '#fff', fontWeight: '500' }}>{leave.leave_type}</td>
+                      <td style={{ padding: '15px 10px', color: '#94a3b8', fontSize: '0.85rem' }}>
+                        <div>{leave.start_date}</div>
+                        <div style={{ color: '#6366f1' }}>↓</div>
+                        <div>{leave.end_date}</div>
                       </td>
-                      <td>{leave.total_days}</td>
-                      <td>
-                        <span className={`status-badge ${getStatusBadge(leave.status)}`}>
+                      <td style={{ padding: '15px 10px', color: '#a78bfa', fontWeight: 'bold' }}>{leave.total_days}</td>
+                      <td style={{ padding: '15px 10px' }}>
+                        <span style={{ 
+                            padding: '4px 8px', borderRadius: '12px', fontSize: '0.75rem', fontWeight: 'bold', textTransform: 'uppercase',
+                            background: leave.status === 'approved' ? 'rgba(16, 185, 129, 0.1)' : leave.status === 'rejected' ? 'rgba(239, 68, 68, 0.1)' : 'rgba(245, 158, 11, 0.1)',
+                            color: leave.status === 'approved' ? '#10b981' : leave.status === 'rejected' ? '#ef4444' : '#f59e0b',
+                            border: `1px solid ${leave.status === 'approved' ? 'rgba(16, 185, 129, 0.2)' : leave.status === 'rejected' ? 'rgba(239, 68, 68, 0.2)' : 'rgba(245, 158, 11, 0.2)'}`
+                        }}>
                           {leave.status}
                         </span>
                       </td>
@@ -250,7 +259,7 @@ const ApplyLeave = () => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="4" className="no-data">No administrative records found.</td>
+                    <td colSpan="4" style={{ padding: '20px', textAlign: 'center', color: '#94a3b8' }}>No administrative records found.</td>
                   </tr>
                 )}
               </tbody>
