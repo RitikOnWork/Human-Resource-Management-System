@@ -40,8 +40,8 @@ const CandidatePortal = lazy(() => import("./pages/candidate/CandidatePortal"));
 
 // A simple loading fallback for Suspense
 const GlobalLoader = () => (
-  <div style={{ display: 'flex', height: '100vh', justifyContent: 'center', alignItems: 'center', backgroundColor: '#0b0f19' }}>
-    <div style={{ color: '#a78bfa', fontSize: '1.5rem', fontWeight: 'bold' }}>Loading...</div>
+  <div style={{ display: 'flex', height: '100vh', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(180deg, #f8fafc 0%, #eef4ff 100%)' }}>
+    <div style={{ color: '#4f46e5', fontSize: '1.5rem', fontWeight: 'bold' }}>Loading...</div>
   </div>
 );
 

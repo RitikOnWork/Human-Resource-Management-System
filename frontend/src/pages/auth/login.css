@@ -4,7 +4,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #0b0f19; /* premium dark */
+  background: linear-gradient(180deg, #f8fafc 0%, #eef4ff 100%);
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   position: relative;
   overflow: hidden;
@@ -18,7 +18,7 @@
   transform: translate(-50%, -50%);
   width: 600px;
   height: 600px;
-  background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, rgba(139, 92, 246, 0) 70%);
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.18) 0%, rgba(99, 102, 241, 0) 70%);
   filter: blur(60px);
   z-index: 0;
   pointer-events: none;
@@ -27,8 +27,8 @@
 .login-grid {
   position: absolute;
   inset: 0;
-  background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-image: linear-gradient(rgba(148, 163, 184, 0.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 163, 184, 0.12) 1px, transparent 1px);
   background-size: 50px 50px;
   z-index: 0;
   pointer-events: none;
@@ -42,7 +42,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #9ca3af;
+  color: #64748b;
   text-decoration: none;
   font-weight: 600;
   font-size: 0.95rem;
@@ -70,10 +70,11 @@
 }
 
 .login-card {
-  background: #111827; /* Standard dark card bg */
+  background: rgba(255, 255, 255, 0.88);
   border-radius: 16px;
   padding: 40px;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  box-shadow: 0 30px 70px -35px rgba(15, 23, 42, 0.35);
   animation: slideUpCard 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
@@ -101,14 +102,14 @@
 .login-header h2 {
   margin: 0 0 8px;
   font-size: 1.75rem;
-  color: #f9fafb;
+  color: #0f172a;
   font-weight: 700;
   letter-spacing: -0.02em;
 }
 
 .login-header p {
   margin: 0;
-  color: #9ca3af;
+  color: #64748b;
   font-size: 0.95rem;
 }
 
@@ -152,7 +153,7 @@
 .form-group label {
   font-size: 0.875rem;
   font-weight: 600;
-  color: #e2e8f0;
+  color: #334155;
   margin: 0;
 }
 
@@ -179,23 +180,23 @@
 .form-group input, .login-form input[type="text"], .login-form input[type="email"], .login-form input[type="password"] {
   width: 100%;
   padding: 14px 16px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(148, 163, 184, 0.28);
   border-radius: 8px;
   font-size: 1rem;
-  color: #f8fafc;
-  background-color: rgba(255, 255, 255, 0.03);
+  color: #0f172a;
+  background-color: rgba(248, 250, 252, 0.92);
   transition: all 0.2s ease;
   box-sizing: border-box; /* Prevents overflow */
 }
 
 .form-group input::placeholder, .login-form input::placeholder {
-  color: #64748b;
+  color: #94a3b8;
 }
 
 .form-group input:focus, .login-form input:focus {
   outline: none;
   border-color: #8b5cf6;
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: #ffffff;
   box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
 }
 
@@ -230,7 +231,7 @@
   right: 12px;
   background: transparent;
   border: none;
-  color: #94a3b8;
+  color: #64748b;
   cursor: pointer;
   padding: 4px;
   display: flex;
@@ -240,7 +241,7 @@
 }
 
 .toggle-btn:hover {
-  color: #f8fafc;
+  color: #0f172a;
 }
 
 /* --- Submit Button --- */
