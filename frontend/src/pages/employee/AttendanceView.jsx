@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { icons } from '../hr/views/Icons';
 
 const AttendanceView = ({ data }) => {
     // Utility for calendar generation
@@ -20,11 +19,10 @@ const AttendanceView = ({ data }) => {
     // Dummy attendance logic for visual generation based on current date
     const getDayStatus = (day) => {
         const today = new Date();
-        if (year > today.getFullYear() || (year === today.getFullYear() && month > today.getMonth())) return 'future'; // Future
+        if (year > today.getFullYear() || (year === today.getFullYear() && month > today.getMonth())) return 'future'; 
         if (year === today.getFullYear() && month === today.getMonth() && day > today.getDate()) return 'future';
         
-        // Randomly assign some statuses for demonstration
-        if (day % 7 === 0 || day % 7 === 6) return 'weekend'; // Weekends rough approx
+        if (day % 7 === 0 || day % 7 === 6) return 'weekend'; 
         
         const random = Math.random();
         if (random > 0.9) return 'absent';
@@ -38,36 +36,36 @@ const AttendanceView = ({ data }) => {
 
     return (
         <div className="emp-dashboard-container" style={{ animation: 'fadeIn 0.4s ease' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+            <div className="emp-header">
                 <div>
-                    <h2 className="candidate-page-title" style={{ marginBottom: '0.5rem' }}>Attendance Tracker</h2>
-                    <p style={{ color: '#94a3b8' }}>Monitor your daily working hours and attendance logs.</p>
+                    <h1>Attendance Tracker</h1>
+                    <p className="emp-subtitle">Monitor your daily working hours and attendance logs.</p>
                 </div>
-                <div style={{ display: 'flex', gap: '1rem' }}>
-                    <button className="apply-btn" style={{ background: 'rgba(255,255,255,0.05)', color: '#fff' }} onClick={() => alert('Jio-Hazari Clock In Initiated!')}>
+                <div style={{ display: 'flex', gap: '1.25rem' }}>
+                    <button className="emp-action-link" style={{ width: 'auto', background: 'var(--bg-secondary)', color: 'var(--text-secondary)' }} onClick={() => alert('Jio-Hazari Clock In Initiated!')}>
                         ⏱ Clock In
                     </button>
-                    <button className="apply-btn" style={{ background: '#a78bfa', color: '#fff' }} onClick={() => alert('Jio-Hazari Clock Out Initiated!')}>
+                    <button className="emp-action-link" style={{ width: 'auto', background: 'var(--accent-purple)', color: 'white' }} onClick={() => alert('Jio-Hazari Clock Out Initiated!')}>
                         Clock Out
                     </button>
                 </div>
             </div>
 
-            <div className="candidate-grid" style={{ gridTemplateColumns: 'minmax(350px, 1fr) minmax(300px, 1fr)' }}>
+            <div className="emp-main-layout">
                 {/* Calendar View */}
-                <div className="candidate-card" style={{ background: 'rgba(255, 255, 255, 0.02)', borderColor: 'rgba(167, 139, 250, 0.2)' }}>
+                <div className="emp-card">
                     {/* Calendar Header */}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', paddingBottom: '1rem', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                        <button onClick={prevMonth} style={{ background: 'transparent', border: 'none', color: '#a78bfa', fontSize: '1.5rem', cursor: 'pointer', padding: '0 10px' }}>&lsaquo;</button>
-                        <h3 style={{ margin: 0, fontSize: '1.3rem', color: '#fff' }}>{monthNames[month]} {year}</h3>
-                        <button onClick={nextMonth} style={{ background: 'transparent', border: 'none', color: '#a78bfa', fontSize: '1.5rem', cursor: 'pointer', padding: '0 10px' }}>&rsaquo;</button>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', paddingBottom: '1rem', borderBottom: '1px solid #f1f5f9' }}>
+                        <button onClick={prevMonth} style={{ background: 'transparent', border: 'none', color: 'var(--accent-purple)', fontSize: '1.75rem', cursor: 'pointer', padding: '0 10px', fontWeight: '800' }}>&lsaquo;</button>
+                        <h3 style={{ margin: 0, fontSize: '1.4rem', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.5px' }}>{monthNames[month]} {year}</h3>
+                        <button onClick={nextMonth} style={{ background: 'transparent', border: 'none', color: 'var(--accent-purple)', fontSize: '1.75rem', cursor: 'pointer', padding: '0 10px', fontWeight: '800' }}>&rsaquo;</button>
                     </div>
 
                     {/* Calendar Grid */}
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '8px', textAlign: 'center' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '12px', textAlign: 'center' }}>
                         {/* Day Names */}
                         {dayNames.map(d => (
-                            <div key={d} style={{ color: '#94a3b8', fontSize: '0.85rem', fontWeight: 'bold', paddingBottom: '10px' }}>{d}</div>
+                            <div key={d} style={{ color: 'var(--text-secondary)', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.5px', paddingBottom: '12px' }}>{d}</div>
                         ))}
                         
                         {/* Blanks for First Day Offset */}
@@ -80,26 +78,25 @@ const AttendanceView = ({ data }) => {
                             const day = i + 1;
                             const status = getDayStatus(day);
                             
-                            let bgColor = 'rgba(255,255,255,0.03)';
-                            let color = '#fff';
-                            let border = '1px solid transparent';
+                            let bgColor = '#f8fafc';
+                            let color = 'var(--text-primary)';
+                            let border = '1px solid var(--border-glass)';
 
-                            if (status === 'present') { bgColor = 'rgba(16, 185, 129, 0.15)'; color = '#10b981'; border = '1px solid rgba(16, 185, 129, 0.3)'; }
-                            if (status === 'absent') { bgColor = 'rgba(239, 68, 68, 0.15)'; color = '#ef4444'; border = '1px solid rgba(239, 68, 68, 0.3)'; }
-                            if (status === 'late') { bgColor = 'rgba(245, 158, 11, 0.15)'; color = '#f59e0b'; border = '1px solid rgba(245, 158, 11, 0.3)'; }
-                            if (status === 'half-day') { bgColor = 'rgba(167, 139, 250, 0.15)'; color = '#a78bfa'; border = '1px solid rgba(167, 139, 250, 0.3)'; }
-                            if (status === 'future') { color = '#475569'; }
+                            if (status === 'present') { bgColor = '#f0fdf4'; color = '#16a34a'; border = '1px solid #bcf0da'; }
+                            if (status === 'absent') { bgColor = '#fef2f2'; color = '#dc2626'; border = '1px solid #fecaca'; }
+                            if (status === 'late') { bgColor = '#fffbeb'; color = '#d97706'; border = '1px solid #fef3c7'; }
+                            if (status === 'half-day') { bgColor = '#f5f3ff'; color = '#7c3aed'; border = '1px solid #ddd6fe'; }
+                            if (status === 'future') { color = '#cbd5e1'; border = '1px dashed #e2e8f0'; }
 
-                            // Highlight Today
                             const isToday = day === new Date().getDate() && month === new Date().getMonth() && year === new Date().getFullYear();
-                            if (isToday) { border = '1px solid #fff'; }
+                            if (isToday) { border = '2px solid var(--accent-purple)'; }
 
                             return (
                                 <div key={day} style={{ 
                                     background: bgColor, color, border, 
-                                    padding: '12px 5px', borderRadius: '8px', 
-                                    fontSize: '0.95rem', fontWeight: isToday ? 'bold' : '500',
-                                    transition: 'transform 0.2s', cursor: 'pointer'
+                                    padding: '14px 5px', borderRadius: '12px', 
+                                    fontSize: '1rem', fontWeight: isToday ? '800' : '600',
+                                    transition: 'all 0.3s ease', cursor: 'pointer'
                                 }} className="calendar-day-hover">
                                     {day}
                                 </div>
@@ -108,72 +105,64 @@ const AttendanceView = ({ data }) => {
                     </div>
 
                     {/* Legend */}
-                    <div style={{ display: 'flex', gap: '15px', marginTop: '2rem', flexWrap: 'wrap', justifyContent: 'center', fontSize: '0.85rem' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><span style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#10b981' }}></span> Present</div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><span style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#ef4444' }}></span> Absent</div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><span style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#f59e0b' }}></span> Late</div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><span style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#a78bfa' }}></span> Half-Day</div>
+                    <div style={{ display: 'flex', gap: '20px', marginTop: '2.5rem', flexWrap: 'wrap', justifyContent: 'center', fontSize: '0.85rem', fontWeight: '700' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><span style={{ width: '12px', height: '12px', borderRadius: '4px', background: '#16a34a' }}></span> Present</div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><span style={{ width: '12px', height: '12px', borderRadius: '4px', background: '#dc2626' }}></span> Absent</div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><span style={{ width: '12px', height: '12px', borderRadius: '4px', background: '#d97706' }}></span> Late</div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><span style={{ width: '12px', height: '12px', borderRadius: '4px', background: '#7c3aed' }}></span> Half-Day</div>
                     </div>
                 </div>
 
                 {/* Right Side - Logs & Summary */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                    <div className="candidate-card" style={{ background: 'rgba(255, 255, 255, 0.02)', borderColor: 'rgba(167, 139, 250, 0.2)' }}>
-                        <h3 style={{ marginBottom: '1.5rem', color: '#fff', fontSize: '1.2rem' }}>Monthly Summary</h3>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                            <div style={{ background: 'rgba(16, 185, 129, 0.05)', padding: '1rem', borderRadius: '12px', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
-                                <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#10b981' }}>18</div>
-                                <div style={{ color: '#94a3b8', fontSize: '0.85rem' }}>Days Present</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+                    <div className="emp-card">
+                        <h3>Monthly Summary</h3>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem', marginTop: '1.5rem' }}>
+                            <div style={{ background: '#f0fdf4', padding: '1.25rem', borderRadius: '16px', border: '1px solid #bcf0da' }}>
+                                <div style={{ fontSize: '2rem', fontWeight: '900', color: '#16a34a', letterSpacing: '-1px' }}>18</div>
+                                <div style={{ color: '#16a34a', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase' }}>Present</div>
                             </div>
-                            <div style={{ background: 'rgba(239, 68, 68, 0.05)', padding: '1rem', borderRadius: '12px', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
-                                <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#ef4444' }}>2</div>
-                                <div style={{ color: '#94a3b8', fontSize: '0.85rem' }}>Days Absent</div>
+                            <div style={{ background: '#fef2f2', padding: '1.25rem', borderRadius: '16px', border: '1px solid #fecaca' }}>
+                                <div style={{ fontSize: '2rem', fontWeight: '900', color: '#dc2626', letterSpacing: '-1px' }}>2</div>
+                                <div style={{ color: '#dc2626', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase' }}>Absent</div>
                             </div>
-                            <div style={{ background: 'rgba(245, 158, 11, 0.05)', padding: '1rem', borderRadius: '12px', border: '1px solid rgba(245, 158, 11, 0.2)' }}>
-                                <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#f59e0b' }}>4</div>
-                                <div style={{ color: '#94a3b8', fontSize: '0.85rem' }}>Late Arrivals</div>
+                            <div style={{ background: '#fffbeb', padding: '1.25rem', borderRadius: '16px', border: '1px solid #fef3c7' }}>
+                                <div style={{ fontSize: '2rem', fontWeight: '900', color: '#d97706', letterSpacing: '-1px' }}>4</div>
+                                <div style={{ color: '#d97706', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase' }}>Late</div>
                             </div>
-                            <div style={{ background: 'rgba(167, 139, 250, 0.05)', padding: '1rem', borderRadius: '12px', border: '1px solid rgba(167, 139, 250, 0.2)' }}>
-                                <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#a78bfa' }}>164h</div>
-                                <div style={{ color: '#94a3b8', fontSize: '0.85rem' }}>Total Hours</div>
+                            <div style={{ background: '#f5f3ff', padding: '1.25rem', borderRadius: '16px', border: '1px solid #ddd6fe' }}>
+                                <div style={{ fontSize: '2rem', fontWeight: '900', color: '#7c3aed', letterSpacing: '-1px' }}>164h</div>
+                                <div style={{ color: '#7c3aed', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase' }}>Total Hours</div>
                             </div>
                         </div>
                     </div>
 
-                    <div className="candidate-card" style={{ background: 'rgba(255, 255, 255, 0.02)', borderColor: 'rgba(167, 139, 250, 0.2)', flex: 1 }}>
-                        <h3 style={{ marginBottom: '1rem', color: '#fff', fontSize: '1.2rem' }}>Recent Check-ins</h3>
+                    <div className="emp-card" style={{ flex: 1 }}>
+                        <h3>Recent Check-ins</h3>
                         
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '12px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px' }}>
-                                <div>
-                                    <div style={{ color: '#fff', fontWeight: 'bold' }}>Today</div>
-                                    <div style={{ color: '#94a3b8', fontSize: '0.85rem' }}>Office HQ • Jio-Hazari WiFi</div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '1.5rem' }}>
+                            {[ { day: 'Today', time: '08:52 AM', status: 'Clock In' }, { day: 'Yesterday', time: '09:05 AM', status: 'Clock In' } ].map((log, idx) => (
+                                <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', padding: '1rem', background: '#f8fafc', borderRadius: '14px', border: '1px solid var(--border-glass)' }}>
+                                    <div>
+                                        <div style={{ color: 'var(--text-primary)', fontWeight: '800', fontSize: '0.95rem' }}>{log.day}</div>
+                                        <div style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', fontWeight: 500 }}>Office HQ • Jio-Hazari</div>
+                                    </div>
+                                    <div style={{ textAlign: 'right' }}>
+                                        <div style={{ color: '#16a34a', fontWeight: '800', fontSize: '0.95rem' }}>{log.time}</div>
+                                        <div style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase' }}>{log.status}</div>
+                                    </div>
                                 </div>
-                                <div style={{ textAlign: 'right' }}>
-                                    <div style={{ color: '#10b981', fontWeight: 'bold' }}>08:52 AM</div>
-                                    <div style={{ color: '#94a3b8', fontSize: '0.85rem' }}>Clock In</div>
-                                </div>
-                            </div>
-                            
-                            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '12px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px' }}>
-                                <div>
-                                    <div style={{ color: '#fff', fontWeight: 'bold' }}>Yesterday</div>
-                                    <div style={{ color: '#94a3b8', fontSize: '0.85rem' }}>Office HQ • Jio-Hazari WiFi</div>
-                                </div>
-                                <div style={{ textAlign: 'right' }}>
-                                    <div style={{ color: '#10b981', fontWeight: 'bold' }}>09:05 AM</div>
-                                    <div style={{ color: '#94a3b8', fontSize: '0.85rem' }}>Clock In</div>
-                                </div>
-                            </div>
+                            ))}
                         </div>
                     </div>
                 </div>
             </div>
             <style dangerouslySetInnerHTML={{__html: `
-                .calendar-day-hover:hover { transform: scale(1.1); box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+                .calendar-day-hover:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); border-color: var(--accent-purple) !important; }
             `}} />
         </div>
     );
 };
 
 export default AttendanceView;
+

@@ -110,8 +110,8 @@ function EmployeeDashboard() {
                     <div className="emp-loading"><div className="spinner"></div>Loading Dashboard...</div>
                 ) : error ? (
                     <div className="emp-loading">
-                      <p style={{ color: '#ef4444' }}>Failed to load dashboard: {error}</p>
-                      <button onClick={() => setActiveTab('dashboard')} style={{ marginTop: '12px', padding: '8px 20px', background: '#6366f1', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer' }}>Retry</button>
+                      <p className="error-banner">Failed to load dashboard: {error}</p>
+                      <button onClick={() => setActiveTab('dashboard')} className="submit-btn" style={{ width: 'auto', marginTop: '1.5rem', padding: '12px 32px' }}>Retry Connection</button>
                     </div>
                 ) : (
                     <div className="emp-dashboard-container">
@@ -125,7 +125,7 @@ function EmployeeDashboard() {
                             <div className="emp-header-right">
                                 <div className="live-clock">
                                     <span className="time">{currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                                    <span className="date">{currentTime.toLocaleDateString()}</span>
+                                    <span className="date">{currentTime.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</span>
                                 </div>
                                 <div className="emp-profile-pill">
                                     <div className="emp-avatar">{data?.user?.name.charAt(0)}</div>
@@ -149,7 +149,7 @@ function EmployeeDashboard() {
                             </div>
 
                             <div className={`emp-card jio-card ${data?.stats.jioHazariStatus === 'In Zone' ? 'active' : 'inactive'}`}>
-                                <div className="card-top">
+                                <div className="card-top" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                     <div className="card-label">Jio-Hazari Status</div>
                                     <div className="live-dot"></div>
                                 </div>
@@ -159,19 +159,19 @@ function EmployeeDashboard() {
                                 <div className="jio-details">
                                     <div className="jio-detail-row">
                                       <span className="jio-lbl">GPS Signal:</span> 
-                                      <span className="jio-val">Strong</span>
+                                      <span className="jio-val" style={{ color: '#10b981' }}>Strong</span>
                                     </div>
                                     <div className="jio-detail-row">
                                       <span className="jio-lbl">Verified at:</span> 
-                                      <span className="jio-val">{currentTime.toLocaleTimeString()}</span>
+                                      <span className="jio-val">{currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</span>
                                     </div>
                                 </div>
                             </div>
 
                             <div className="emp-card">
                                 <div className="card-label">Monthly Attendance</div>
-                                <div className="stat-large">{data?.stats.attendanceRate}%</div>
-                                <div className="stat-sub positive">Excellent Record</div>
+                                <div className="stat-large">{data?.stats.attendanceRate}<span className="unit">%</span></div>
+                                <div className="stat-sub positive" style={{ marginTop: '0.5rem', display: 'block' }}>Excellent Record</div>
                             </div>
 
                             <div className="emp-card">
@@ -209,21 +209,24 @@ function EmployeeDashboard() {
                                 </div>
 
                                 <div className="emp-card">
-                                    <h3>🤖 Java AI Recommendations</h3>
+                                    <div className="card-header-row">
+                                        <h3>🤖 Java AI Recommendations</h3>
+                                    </div>
                                     <div className="insight-list">
                                         <div className="insight-item">
                                             <div className="insight-icon info">i</div>
                                             <div className="insight-content">
                                                 <strong>Performance Trend: {data?.stats.aiTrend}</strong><br/>
                                                 {data?.stats.aiRecommendation}
-                                                <div style={{ marginTop: '8px', fontSize: '0.8rem', color: '#6366f1' }}>Powered by JVM Analytics Engine</div>
+                                                <div style={{ marginTop: '12px', fontSize: '0.75rem', color: 'var(--accent-purple)', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Powered by JVM Analytics Engine</div>
                                             </div>
                                         </div>
                                         {data?.stats.overtimeHours > 0 && (
-                                            <div className="insight-item" style={{ marginTop: '10px' }}>
-                                                <div className="insight-icon" style={{ background: '#10b981' }}>⏱</div>
+                                            <div className="insight-item">
+                                                <div className="insight-icon info" style={{ background: 'var(--accent-green)' }}>⏱</div>
                                                 <div className="insight-content">
-                                                    <strong>Overtime Logged:</strong> You have {data?.stats.overtimeHours} hours of overtime processed by the Java Engine this period.
+                                                    <strong>Overtime Logged</strong><br/>
+                                                    You have {data?.stats.overtimeHours} hours of overtime processed by the Java Engine this period.
                                                 </div>
                                             </div>
                                         )}
@@ -234,10 +237,10 @@ function EmployeeDashboard() {
                             <div className="emp-column-side">
                                 <div className="emp-card profile-details-card">
                                     <h3>Employee Profile</h3>
-                                    <div className="detail-row"><span className="lbl">Code:</span> <span className="val">{data?.employee.employee_code}</span></div>
-                                    <div className="detail-row"><span className="lbl">Dept:</span> <span className="val">{data?.employee.department}</span></div>
-                                    <div className="detail-row"><span className="lbl">Status:</span> <span className="badge active">{data?.employee.status}</span></div>
-                                    <button className="btn-full-width">Update Profile</button>
+                                    <div className="detail-row"><span className="lbl">Serial Code</span> <span className="val" style={{ color: 'var(--accent-purple)' }}>{data?.employee.employee_code}</span></div>
+                                    <div className="detail-row"><span className="lbl">Department</span> <span className="val">{data?.employee.department}</span></div>
+                                    <div className="detail-row"><span className="lbl">Status</span> <span className="badge active">{data?.employee.status}</span></div>
+                                    <button className="submit-btn" style={{ width: '100%', marginTop: '2rem' }} onClick={() => setActiveTab('profile')}>Manage Profile</button>
                                 </div>
                                 <div className="emp-card">
                                     <h3>Quick Actions</h3>
@@ -249,6 +252,7 @@ function EmployeeDashboard() {
                             </div>
                         </div>
                     </div>
+
                 )}
             </>
         )}

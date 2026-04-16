@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { icons } from '../hr/views/Icons';
 
 const ApplyLeave = () => {
-  // ... state logic remains same ...
   const [leaveTypes, setLeaveTypes] = useState([]);
   const [leaveBalances, setLeaveBalances] = useState([]);
   const [leaveHistory, setLeaveHistory] = useState([]);
@@ -62,7 +61,6 @@ const ApplyLeave = () => {
         setLeaveHistory(historyRes);
         setLoading(false);
       } catch (error) {
-        console.error("Error fetching leave data", error);
         setLoading(false);
       }
     };
@@ -70,7 +68,6 @@ const ApplyLeave = () => {
     fetchLeaveData();
   }, []);
 
-  // ... duration and change handlers ...
   useEffect(() => {
     if (formData.startDate && formData.endDate) {
       const start = new Date(formData.startDate);
@@ -109,13 +106,10 @@ const ApplyLeave = () => {
           reason: formData.reason,
         }),
       });
-      const data = await res.json();
       if (!res.ok) {
-        alert(data.error || "Failed to submit leave request");
         setSubmitting(false);
         return;
       }
-      alert("Application Submitted!");
       setFormData({ leaveTypeId: '', startDate: '', endDate: '', reason: '', contactNumber: '', medicalDoc: null });
       setTotalDays(0);
       setLeaveHistory(prev => [{
@@ -128,17 +122,9 @@ const ApplyLeave = () => {
         reason: formData.reason
       }, ...prev]);
     } catch (err) {
-      alert("Network error.");
+      console.error(err);
     } finally {
       setSubmitting(false);
-    }
-  };
-
-  const getStatusBadge = (status) => {
-    switch(status.toLowerCase()) {
-      case 'approved': return 'badge-success';
-      case 'rejected': return 'badge-danger';
-      default: return 'badge-warning';
     }
   };
 
@@ -146,112 +132,100 @@ const ApplyLeave = () => {
 
   return (
     <div className="emp-dashboard-container" style={{ animation: 'fadeIn 0.4s ease' }}>
-      <div style={{ marginBottom: '2rem' }}>
-        <h2 className="candidate-page-title" style={{ marginBottom: '0.5rem' }}>Leave Administration</h2>
-        <p style={{ color: '#94a3b8' }}>Manage your time-off requests and view accrual balances.</p>
+      <div className="emp-header">
+        <div>
+          <h1>Leave Administration</h1>
+          <p className="emp-subtitle">Manage your time-off requests and view accrual balances.</p>
+        </div>
       </div>
 
       {/* --- LEAVE BALANCES --- */}
-      <div className="candidate-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem', marginBottom: '2rem' }}>
+      <div className="emp-stats-grid" style={{ marginBottom: '2.5rem' }}>
         {leaveBalances.map((bal) => (
-          <div key={bal.code} className="candidate-card" style={{ display: 'flex', alignItems: 'center', gap: '15px', padding: '1.5rem', background: 'rgba(255, 255, 255, 0.02)', borderColor: 'rgba(167, 139, 250, 0.2)' }}>
-            <div style={{ background: 'rgba(167, 139, 250, 0.1)', color: '#a78bfa', width: '50px', height: '50px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem' }}>
+          <div key={bal.code} className="emp-card" style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+            <div style={{ background: 'var(--bg-secondary)', color: 'var(--accent-purple)', width: '60px', height: '60px', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.75rem', boxShadow: '0 8px 16px rgba(0,0,0,0.03)' }}>
                 {icons[bal.icon] || '📅'}
             </div>
             <div>
-              <div style={{ color: '#fff', fontWeight: 'bold', fontSize: '1.1rem' }}>{bal.name}</div>
-              <div style={{ fontSize: '1.8rem', fontWeight: '900', color: '#a78bfa', lineHeight: '1' }}>{bal.balance}</div>
-              <div style={{ color: '#94a3b8', fontSize: '0.85rem' }}>Days Available</div>
+              <div style={{ color: 'var(--text-secondary)', fontWeight: 800, fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '4px' }}>{bal.name}</div>
+              <div style={{ fontSize: '1.75rem', fontWeight: '900', color: 'var(--text-primary)', lineHeight: '1' }}>{bal.balance} <span style={{ fontSize: '1rem', color: 'var(--text-secondary)', fontWeight: 700 }}>Days</span></div>
             </div>
           </div>
         ))}
       </div>
 
-      <div className="candidate-grid" style={{ gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+      <div className="emp-main-layout">
         
         {/* --- APPLY LEAVE FORM --- */}
-        <div className="candidate-card" style={{ background: 'rgba(255, 255, 255, 0.02)', borderColor: 'rgba(167, 139, 250, 0.2)' }}>
-          <h3 style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '1rem', display: 'flex', alignItems: 'center', gap: '10px', color: '#fff', marginBottom: '1.5rem' }}>
-            {icons.edit} Application Form
-          </h3>
-          <form onSubmit={handleSubmit} style={{ display: 'grid', gap: '1.5rem' }}>
-            <div>
-              <label style={{ display: 'block', color: '#94a3b8', marginBottom: '0.5rem', fontSize: '0.9rem' }}>Select Leave Category</label>
-              <select name="leaveTypeId" value={formData.leaveTypeId} onChange={handleInputChange} className="candidate-input" style={{ width: '100%', boxSizing: 'border-box' }} required>
-                <option value="" style={{ color: '#000' }}>Choose a type...</option>
+        <div className="emp-card">
+          <div className="card-header-row">
+            <h3>Application Form</h3>
+          </div>
+          <form onSubmit={handleSubmit} className="login-form">
+            <div className="form-group">
+              <label>Select Leave Category</label>
+              <select name="leaveTypeId" value={formData.leaveTypeId} onChange={handleInputChange} required>
+                <option value="">Choose a type...</option>
                 {leaveTypes.map(type => (
-                  <option key={type.id} value={type.id} style={{ color: '#000' }}>{type.name}</option>
+                  <option key={type.id} value={type.id}>{type.name}</option>
                 ))}
               </select>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-              <div>
-                <label style={{ display: 'block', color: '#94a3b8', marginBottom: '0.5rem', fontSize: '0.9rem' }}>Commencement Date</label>
-                <input type="date" name="startDate" value={formData.startDate} onChange={handleInputChange} className="candidate-input" style={{ width: '100%', boxSizing: 'border-box' }} required />
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+              <div className="form-group">
+                <label>Commencement Date</label>
+                <input type="date" name="startDate" value={formData.startDate} onChange={handleInputChange} required />
               </div>
-              <div>
-                <label style={{ display: 'block', color: '#94a3b8', marginBottom: '0.5rem', fontSize: '0.9rem' }}>Conclusion Date</label>
-                <input type="date" name="endDate" value={formData.endDate} onChange={handleInputChange} className="candidate-input" style={{ width: '100%', boxSizing: 'border-box' }} required />
-              </div>
-            </div>
-
-            <div>
-              <label style={{ display: 'block', color: '#94a3b8', marginBottom: '0.5rem', fontSize: '0.9rem' }}>Calculated Duration</label>
-              <div style={{ background: 'rgba(167, 139, 250, 0.1)', padding: '10px 15px', borderRadius: '8px', color: '#a78bfa', display: 'flex', alignItems: 'center', gap: '8px', border: '1px solid rgba(167, 139, 250, 0.2)' }}>
-                {icons.clock} <span><strong style={{fontSize: '1.1rem'}}>{totalDays}</strong> working days</span>
+              <div className="form-group">
+                <label>Conclusion Date</label>
+                <input type="date" name="endDate" value={formData.endDate} onChange={handleInputChange} required />
               </div>
             </div>
 
-            <div>
-              <label style={{ display: 'block', color: '#94a3b8', marginBottom: '0.5rem', fontSize: '0.9rem' }}>Justification / Reason</label>
-              <textarea name="reason" rows="3" value={formData.reason} onChange={handleInputChange} placeholder="Administrative reason for absence..." className="candidate-input" style={{ width: '100%', boxSizing: 'border-box', resize: 'vertical' }} required />
+            <div style={{ background: 'var(--bg-secondary)', padding: '1.25rem', borderRadius: '16px', border: '1px solid var(--border-glass)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ color: 'var(--text-secondary)', fontWeight: 800, fontSize: '0.8rem', textTransform: 'uppercase' }}>Calculated Duration</span>
+              <span style={{ color: 'var(--accent-purple)', fontWeight: 900, fontSize: '1.2rem' }}>{totalDays} <span style={{ fontSize: '0.85rem' }}>Working Days</span></span>
             </div>
 
-            <div>
-                <label style={{ display: 'block', color: '#94a3b8', marginBottom: '0.5rem', fontSize: '0.9rem' }}>Emergency Contact No.</label>
-                <input type="text" name="contactNumber" value={formData.contactNumber} onChange={handleInputChange} placeholder="+91 XXXX XXX XXX" className="candidate-input" style={{ width: '100%', boxSizing: 'border-box' }} />
+            <div className="form-group">
+              <label>Justification / Reason</label>
+              <textarea name="reason" rows="3" value={formData.reason} onChange={handleInputChange} placeholder="Administrative reason for absence..." style={{ width: '100%', padding: '14px 18px', border: '1px solid #e2e8f0', borderRadius: '12px', resize: 'none', backgroundColor: '#f8fafc', fontFamily: 'inherit' }} required />
             </div>
 
-            <button type="submit" className="apply-btn" disabled={submitting} style={{ background: '#a78bfa', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginTop: '0.5rem' }}>
-              {submitting ? 'Processing Application...' : <>{icons.check} Submit Leave Request</>}
+            <button type="submit" className="submit-btn" disabled={submitting}>
+              {submitting ? 'Processing Application...' : 'Submit Leave Request'}
             </button>
           </form>
         </div>
 
         {/* --- LEAVE HISTORY --- */}
-        <div className="candidate-card" style={{ background: 'rgba(255, 255, 255, 0.02)', borderColor: 'rgba(167, 139, 250, 0.2)' }}>
-          <h3 style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '1rem', display: 'flex', alignItems: 'center', gap: '10px', color: '#fff', marginBottom: '1.5rem' }}>
-            {icons.history} Request & Approval Logs
-          </h3>
-          <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+        <div className="emp-card">
+          <div className="card-header-row">
+            <h3>Request & Approval Logs</h3>
+          </div>
+          <div style={{ overflowX: 'auto', marginTop: '1.5rem' }}>
+            <table className="payroll-table">
               <thead>
-                <tr style={{ color: '#94a3b8', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                  <th style={{ padding: '12px 10px', fontWeight: '500' }}>Category</th>
-                  <th style={{ padding: '12px 10px', fontWeight: '500' }}>Duration</th>
-                  <th style={{ padding: '12px 10px', fontWeight: '500' }}>Days</th>
-                  <th style={{ padding: '12px 10px', fontWeight: '500' }}>Status</th>
+                <tr>
+                  <th>Category</th>
+                  <th>Duration</th>
+                  <th>Days</th>
+                  <th>Status</th>
                 </tr>
               </thead>
               <tbody>
                 {leaveHistory.length > 0 ? (
                   leaveHistory.map((leave) => (
-                    <tr key={leave.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.02)' }}>
-                      <td style={{ padding: '15px 10px', color: '#fff', fontWeight: '500' }}>{leave.leave_type}</td>
-                      <td style={{ padding: '15px 10px', color: '#94a3b8', fontSize: '0.85rem' }}>
-                        <div>{leave.start_date}</div>
-                        <div style={{ color: '#6366f1' }}>↓</div>
-                        <div>{leave.end_date}</div>
+                    <tr key={leave.id}>
+                      <td style={{ fontWeight: 800, color: 'var(--text-primary)' }}>{leave.leave_type}</td>
+                      <td>
+                        <div style={{ fontSize: '0.85rem', fontWeight: 600 }}>{leave.start_date}</div>
+                        <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>to {leave.end_date}</div>
                       </td>
-                      <td style={{ padding: '15px 10px', color: '#a78bfa', fontWeight: 'bold' }}>{leave.total_days}</td>
-                      <td style={{ padding: '15px 10px' }}>
-                        <span style={{ 
-                            padding: '4px 8px', borderRadius: '12px', fontSize: '0.75rem', fontWeight: 'bold', textTransform: 'uppercase',
-                            background: leave.status === 'approved' ? 'rgba(16, 185, 129, 0.1)' : leave.status === 'rejected' ? 'rgba(239, 68, 68, 0.1)' : 'rgba(245, 158, 11, 0.1)',
-                            color: leave.status === 'approved' ? '#10b981' : leave.status === 'rejected' ? '#ef4444' : '#f59e0b',
-                            border: `1px solid ${leave.status === 'approved' ? 'rgba(16, 185, 129, 0.2)' : leave.status === 'rejected' ? 'rgba(239, 68, 68, 0.2)' : 'rgba(245, 158, 11, 0.2)'}`
-                        }}>
+                      <td style={{ fontWeight: 800, color: 'var(--accent-purple)' }}>{leave.total_days}</td>
+                      <td>
+                        <span className={`badge ${leave.status.toLowerCase()}`}>
                           {leave.status}
                         </span>
                       </td>
@@ -259,7 +233,7 @@ const ApplyLeave = () => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="4" style={{ padding: '20px', textAlign: 'center', color: '#94a3b8' }}>No administrative records found.</td>
+                    <td colSpan="4" style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-secondary)' }}>No administrative records found.</td>
                   </tr>
                 )}
               </tbody>
@@ -271,6 +245,9 @@ const ApplyLeave = () => {
     </div>
   );
 };
+
+export default ApplyLeave;
+
 
 
 export default ApplyLeave;

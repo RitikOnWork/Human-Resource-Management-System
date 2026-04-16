@@ -1,11 +1,11 @@
 /* =========================================
-   Employee Sidebar - Premium Dark Theme
+   Employee Sidebar - Lite Premium
    ========================================= */
 
 .emp-sidebar {
     width: 280px;
     height: 100vh;
-    background-color: var(--bg-secondary);
+    background-color: #ffffff;
     border-right: 1px solid var(--border-glass);
     display: flex;
     flex-direction: column;
@@ -13,46 +13,47 @@
     top: 0;
     left: 0;
     z-index: 1000;
+    box-shadow: 10px 0 40px rgba(0, 0, 0, 0.02);
 }
 
 /* Header */
 .sidebar-header {
-    height: 80px;
+    height: 100px;
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 0 24px;
-    border-bottom: 1px solid var(--border-glass);
+    gap: 16px;
+    padding: 0 32px;
+}
+
+.sidebar-logo-icon svg {
+    width: 44px;
+    height: 44px;
+    filter: drop-shadow(0 4px 10px rgba(167, 139, 250, 0.2));
 }
 
 .sidebar-app-name {
-    font-size: 1.1rem;
-    font-weight: 800;
-    background: linear-gradient(90deg, #a78bfa, #60a5fa);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+    font-size: 1.25rem;
+    font-weight: 900;
+    color: var(--text-primary);
     display: flex;
     flex-direction: column;
     line-height: 1.1;
+    letter-spacing: -0.5px;
 }
 
 .sidebar-app-name span {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     color: var(--text-secondary);
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1px;
-    background: none;
-    -webkit-text-fill-color: var(--text-secondary);
 }
 
 /* Navigation */
 .sidebar-nav {
     flex: 1;
-    padding: 24px 16px;
+    padding: 2rem 1.25rem;
     overflow-y: auto;
-    list-style: none; /* Force remove bullets */
 }
 
 .sidebar-nav ul {
@@ -62,16 +63,15 @@
 }
 
 .sidebar-nav li {
-    list-style: none;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
 .nav-btn {
     width: 100%;
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 12px 16px;
+    gap: 14px;
+    padding: 12px 18px;
     background: transparent;
     border: none;
     border-radius: 12px;
@@ -79,35 +79,41 @@
     font-size: 0.95rem;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     text-align: left;
 }
 
-.nav-btn i, .nav-btn svg {
-    font-size: 1.2rem;
-    min-width: 24px;
+.nav-btn .nav-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
 }
 
 .nav-btn:hover {
-    background-color: rgba(255, 255, 255, 0.05);
-    color: #ffffff;
-    transform: translateX(4px);
+    background-color: #f8fafc;
+    color: var(--text-primary);
+}
+
+.nav-btn:hover .nav-icon {
+    transform: scale(1.1);
 }
 
 .nav-btn.active {
-    background: linear-gradient(90deg, rgba(139, 92, 246, 0.15), transparent);
+    background: rgba(99, 102, 241, 0.08);
     color: var(--accent-purple); 
-    border-left: 4px solid var(--accent-purple);
-    border-radius: 4px 12px 12px 4px;
     font-weight: 800;
-    box-shadow: -10px 0 20px rgba(139, 92, 246, 0.1);
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.05);
 }
 
+.nav-btn.active .nav-icon {
+    color: var(--accent-purple);
+}
 
 /* Footer */
 .sidebar-footer {
-    padding: 24px;
-    border-top: 1px solid var(--border-glass);
+    padding: 2rem 1.25rem;
+    border-top: 1px solid #f1f5f9;
 }
 
 .logout-btn {
@@ -115,25 +121,32 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    padding: 12px;
-    background-color: rgba(239, 68, 68, 0.1);
-    color: #ef4444;
-    border: 1px solid rgba(239, 68, 68, 0.15);
-    border-radius: 8px;
+    gap: 10px;
+    padding: 14px;
+    background-color: #f8fafc;
+    color: #475569;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
     font-weight: 700;
+    font-size: 0.9rem;
     cursor: pointer;
     transition: all 0.3s ease;
-    margin-bottom: 8px;
+    margin-bottom: 1rem;
 }
 
 .logout-btn:hover {
     background-color: #ef4444;
     color: white;
+    border-color: #ef4444;
+    box-shadow: 0 8px 20px rgba(239, 68, 68, 0.2);
+    transform: translateY(-2px);
 }
 
 .footer-version {
     text-align: center;
-    font-size: 0.75rem;
-    color: var(--text-secondary);
+    font-size: 0.7rem;
+    color: #94a3b8;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
