@@ -198,6 +198,6 @@ CLIENT_URL=http://localhost:5173
 ---
 
 *Built with React, Node.js, Express, and MongoDB for the modern HR ecosystem.*
-*Created with ❤️ by Ritik Raj.*
+*Created with ❤️ by Ritik Raj, Rupesh Kumar, Abhishek Kumar Patel*
 
 🔗 **Connect with me:** [LinkedIn](https://www.linkedin.com/in/ritikonwork)
